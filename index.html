@@ -2325,7 +2325,7 @@ function exportData() {
 let chatInitialized = false;
 let chatHistory = [];
 const GEMINI_KEY = "AIzaSyCF50ynkpHj3rMjuOEg9T8C0JrjyhIboTE";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`;
 
 /* Blocked topics — personal data & project source codes */
 const BLOCKED_PATTERNS = [
@@ -2376,27 +2376,26 @@ async function callAI(userMsg) {
     return "🔒 I'm sorry, I can't share that information. For security reasons, source code, personal details, passwords, and API keys are strictly protected. How else can I help you with DevHub?";
   }
 
-  // Build conversation history for Gemini
+  // Inject system prompt as first user/model pair (Gemini compatible)
   const contents = [];
-  // Add history (last 8 turns max for context)
-  const recentHistory = chatHistory.slice(-8);
-  for (const h of recentHistory) {
+  contents.push({ role: "user",  parts: [{ text: GEMINI_SYSTEM }] });
+  contents.push({ role: "model", parts: [{ text: "Understood! I am DevHub AI Assistant, ready to help." }] });
+
+  // Last 6 turns of history
+  const recent = chatHistory.slice(-6);
+  for (const h of recent) {
     contents.push({ role: h.role === "user" ? "user" : "model", parts: [{ text: h.content }] });
   }
   contents.push({ role: "user", parts: [{ text: userMsg }] });
 
   const body = {
-    system_instruction: { parts: [{ text: GEMINI_SYSTEM }] },
     contents,
-    generationConfig: {
-      temperature: 0.7,
-      topK: 40,
-      topP: 0.95,
-      maxOutputTokens: 800
-    },
+    generationConfig: { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 800 },
     safetySettings: [
-      { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
-      { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+      { category: "HARM_CATEGORY_HARASSMENT",       threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_HATE_SPEECH",       threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
     ]
   };
 
@@ -2406,11 +2405,13 @@ async function callAI(userMsg) {
     body: JSON.stringify(body)
   });
 
-  if (!resp.ok) throw new Error("Gemini API error: " + resp.status);
+  if (!resp.ok) {
+    const errData = await resp.json().catch(()=>({}));
+    throw new Error(errData?.error?.message || "Gemini error: " + resp.status);
+  }
   const data = await resp.json();
   const txt = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-  chatHistory.push({ role: "user", content: userMsg });
+  chatHistory.push({ role: "user",      content: userMsg });
   chatHistory.push({ role: "assistant", content: txt });
   return txt || "I'm here to help! Please ask me anything about DevHub.";
 }
