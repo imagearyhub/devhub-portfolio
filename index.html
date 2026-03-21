@@ -1284,7 +1284,7 @@ body.light-mode body::before { opacity: .4; }
         <div class="viewer-title" id="viewerTitle">System Viewer</div>
         <div style="margin-left:auto;font-size:.72rem;color:var(--txt3);">🔒 Secured View</div>
       </div>
-      <iframe class="viewer-iframe" id="systemFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+      <iframe class="viewer-iframe" id="systemFrame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-pointer-lock"></iframe>
     </section>
 
     <!-- ── ABOUT ── -->
@@ -1871,30 +1871,62 @@ function openSystemViewer(sys) {
   const frame = document.getElementById("systemFrame");
   document.getElementById("viewerTitle").textContent = (sys.icon||"📦") + " " + sys.name;
 
+  // Determine correct src
+  let src = "about:blank";
+
   if (sys.blobUrl) {
-    // Uploaded file — use blob URL (current session)
-    frame.src = sys.blobUrl;
+    src = sys.blobUrl;
   } else if (sys.hasBlob) {
-    // Try to restore from localStorage
     try {
       const stored = JSON.parse(localStorage.getItem("dh_blobs") || "{}");
       if (stored[sys.id]) {
         const blob = new Blob([stored[sys.id]], {type:"text/html"});
         sys.blobUrl = URL.createObjectURL(blob);
-        frame.src   = sys.blobUrl;
-      } else { frame.src = sys.fileName || "about:blank"; }
-    } catch(e) { frame.src = sys.fileName || "about:blank"; }
+        src = sys.blobUrl;
+      } else {
+        src = buildFileSrc(sys.fileName);
+      }
+    } catch(e) { src = buildFileSrc(sys.fileName); }
   } else {
-    // External URL or local file name
-    frame.src = sys.fileName || "about:blank";
+    src = buildFileSrc(sys.fileName);
   }
 
-  // Fallback srcdoc if iframe fails
-  frame.onerror = function() {
-    frame.srcdoc = `<html><body style="font-family:sans-serif;background:#020c1b;color:#93c5fd;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem"><div><div style="font-size:3rem;margin-bottom:1rem">📂</div><h2>${sys.name}</h2><p style="opacity:.6;margin-top:.5rem">Could not load: ${sys.fileName||'(no source)'}</p></div></body></html>`;
-  };
+  frame.src = src;
+
+  // Timeout fallback — if blank after 4s show helpful message
+  const timer = setTimeout(function() {
+    try {
+      if (!frame.contentDocument || frame.contentDocument.body.innerHTML.trim() === "") {
+        showViewerFallback(frame, sys);
+      }
+    } catch(e) {
+      // cross-origin check blocked — file likely loading fine
+    }
+  }, 4000);
+
+  frame.onload = function() { clearTimeout(timer); };
+  frame.onerror = function() { clearTimeout(timer); showViewerFallback(frame, sys); };
 
   showSec("viewer");
+}
+
+function buildFileSrc(fileName) {
+  if (!fileName) return "about:blank";
+  // If it's already a full URL, use as-is
+  if (fileName.startsWith("http://") || fileName.startsWith("https://")) return fileName;
+  // For GitHub Pages — build relative URL from current page location
+  const base = window.location.href.replace(/\/[^\/]*$/, "/").replace("index.html","");
+  return base + fileName;
+}
+
+function showViewerFallback(frame, sys) {
+  frame.srcdoc = `<!DOCTYPE html><html><body style="font-family:'Inter',sans-serif;background:#020c1b;color:#93c5fd;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem;flex-direction:column;gap:1rem">
+    <div style="font-size:3.5rem">${sys.icon||"📦"}</div>
+    <h2 style="color:white;font-size:1.4rem">${sys.name}</h2>
+    <p style="opacity:.6;font-size:.9rem">File: <code style="background:rgba(255,255,255,.1);padding:.2rem .5rem;border-radius:4px">${sys.fileName||"(no file)"}</code></p>
+    <p style="opacity:.5;font-size:.8rem;max-width:400px">Make sure this file is uploaded to your GitHub repository with the exact same name.</p>
+    <a href="${buildFileSrc(sys.fileName)}" target="_blank" style="padding:.6rem 1.2rem;background:#2563eb;color:white;border-radius:8px;text-decoration:none;font-weight:700;margin-top:.5rem">🔗 Open in New Tab</a>
+  </body></html>`;
 }
 
 function checkOwnerNav(sec) {
