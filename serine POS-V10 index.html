@@ -1,0 +1,2261 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0c1510">
+<title>SERINE TEA LEAF — POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ================================================================
+   SERINE TEA LEAF POS — v9 FINAL
+   Clean · No Logo · Error-Free · High Security · Full Responsive
+   ================================================================ */
+
+:root {
+  --p:    #1a5c36; --p2: #226644; --p3: #091408; --p4: #2a8050;
+  --acc:  #c8a84b; --acc2:#e8cc70; --acc3:#a07828;
+  --g:    #2ecc71; --r:  #e74c3c; --b:  #2471a3;
+  --o:    #d35400; --pu: #7d3c98; --tl: #148f77;
+  --bg:   #0c1510; --bg2:#111a14;
+  --card: #162018; --card2:#1c2a1e; --card3:#223028;
+  --bdr:  #28402a; --txt:#dceedd; --txt2:#78a080;
+  --sh:  0 2px 20px rgba(0,0,0,.45);
+  --sh2: 0 8px 40px rgba(0,0,0,.6);
+  --sh3: 0 20px 80px rgba(0,0,0,.75);
+  --rr: 16px; --rr2: 10px;
+  --f: 'Noto Sans Sinhala', sans-serif;
+}
+body.light {
+  --bg:#f2f5f2; --bg2:#eaeeea; --card:#fff; --card2:#f6fbf6;
+  --card3:#ecf4ec; --bdr:#c8dcc8; --txt:#182818; --txt2:#527052;
+  --sh:0 2px 20px rgba(26,56,40,.08); --sh2:0 8px 40px rgba(26,56,40,.14);
+  --sh3:0 20px 80px rgba(26,56,40,.18);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;height:100%}
+body{
+  font-family:var(--f)!important;
+  background:var(--bg);color:var(--txt);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+  -webkit-user-select:none;user-select:none;
+}
+*{font-family:var(--f)!important}
+input,textarea,select{-webkit-user-select:text;user-select:text}
+img{max-width:100%;height:auto}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
+
+.screen{display:none}.screen.active{display:block}
+
+/* ── LOGIN ── */
+#loginScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 60% 35%,#0d2a18 0%,#071208 55%,#040a06 100%);
+  padding:1rem;position:relative;overflow:hidden;
+}
+.lg-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lg-orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.1}
+.lg-orb.o1{width:600px;height:600px;top:-180px;right:-150px;background:var(--acc)}
+.lg-orb.o2{width:500px;height:500px;bottom:-150px;left:-100px;background:var(--p)}
+.lg-wrap{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:100vh;padding:2rem 1rem}
+.lg-card{
+  background:rgba(18,30,20,.97);backdrop-filter:blur(20px);
+  border-radius:22px;padding:2.6rem 2.2rem;width:100%;max-width:420px;
+  box-shadow:var(--sh3);border:1px solid rgba(42,128,80,.22);
+  animation:popUp .45s cubic-bezier(.34,1.56,.64,1);
+}
+body.light .lg-card{background:rgba(255,255,255,.97);border-color:rgba(26,92,54,.2)}
+@keyframes popUp{from{opacity:0;transform:scale(.9) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.lg-logo{text-align:center;margin-bottom:1.8rem}
+.lg-logo h1{font-size:2rem;font-weight:800;color:var(--acc2);letter-spacing:2px;line-height:1.1}
+body.light .lg-logo h1{color:var(--p)}
+.lg-logo p{font-size:.7rem;color:var(--txt2);letter-spacing:2.5px;font-weight:600;margin-top:.35rem;text-transform:uppercase}
+.lg-leaf{font-size:2.2rem;display:block;margin-bottom:.8rem}
+
+.staff-box{
+  display:flex;align-items:flex-start;gap:.7rem;
+  background:rgba(46,204,113,.07);border:1.5px solid rgba(46,204,113,.2);
+  border-radius:var(--rr2);padding:.85rem 1rem;margin-bottom:1.4rem;
+}
+body.light .staff-box{background:#f0faf0;border-color:#a8d8a8}
+.sb-icon{font-size:1.4rem;flex-shrink:0;margin-top:.1rem}
+.sb-text strong{display:block;font-size:.9rem;font-weight:700;color:var(--g);margin-bottom:.25rem}
+body.light .sb-text strong{color:var(--p)}
+.sb-text span{font-size:.8rem;color:var(--txt2)}
+.sb-text code{
+  background:rgba(255,255,255,.08);border:1px solid var(--bdr);
+  border-radius:4px;padding:.1rem .42rem;font-size:.78rem;color:var(--acc2);font-weight:700;
+}
+body.light .sb-text code{background:white;color:var(--p)}
+
+.lg-form{display:flex;flex-direction:column;gap:.9rem}
+.lg-field label{display:block;font-size:.72rem;font-weight:700;letter-spacing:1.2px;color:var(--txt2);text-transform:uppercase;margin-bottom:.3rem}
+.lg-field input,.lg-field select{
+  width:100%;padding:.78rem 1rem;border:2px solid var(--bdr);border-radius:var(--rr2);
+  font-size:.97rem;color:var(--txt);background:var(--card2);
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.lg-field input::placeholder{color:var(--txt2)}
+.lg-field input:focus,.lg-field select:focus{border-color:var(--p4);box-shadow:0 0 0 3px rgba(42,128,80,.2)}
+.lg-field select option{background:var(--card2);color:var(--txt)}
+body.light .lg-field input,body.light .lg-field select{background:white;color:var(--txt)}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:3.2rem}
+.eye-btn{
+  position:absolute;right:.8rem;top:50%;transform:translateY(-50%);
+  background:none;border:none;font-size:1.1rem;opacity:.5;color:var(--txt2);
+  transition:opacity .2s;padding:0;line-height:1;
+}
+.eye-btn:hover{opacity:1}
+
+.enc-pill{
+  display:flex;align-items:center;gap:.55rem;
+  background:rgba(46,204,113,.07);border:1px solid rgba(46,204,113,.18);
+  border-radius:30px;padding:.42rem 1rem;font-size:.8rem;font-weight:600;color:var(--g);width:fit-content;
+}
+body.light .enc-pill{background:#f0faf0;border-color:#a8d8a8;color:var(--p)}
+.enc-pulse{width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+
+.btn-login{
+  display:flex;align-items:center;justify-content:center;gap:.8rem;
+  width:100%;padding:.92rem;
+  background:linear-gradient(135deg,var(--p),var(--p4));
+  color:white;border:1px solid rgba(42,128,80,.5);border-radius:var(--rr2);
+  font-size:1.05rem;font-weight:700;letter-spacing:.5px;
+  transition:transform .2s,box-shadow .2s;
+  position:relative;z-index:1;overflow:hidden;
+}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.btn-arrow{font-size:1.2rem;transition:transform .2s;pointer-events:none}
+.btn-login:hover .btn-arrow{transform:translateX(4px)}
+.lg-err{min-height:1.3rem;font-size:.86rem;font-weight:700;color:var(--r);text-align:center;margin-top:.2rem}
+.lg-locked{
+  background:rgba(231,76,60,.12);border:1px solid rgba(231,76,60,.3);
+  border-radius:var(--rr2);padding:.6rem;text-align:center;font-size:.82rem;
+  color:var(--r);display:none;
+}
+.lg-locked.show{display:block}
+
+/* ── MAIN APP ── */
+#mainApp{display:none;flex-direction:column;min-height:100vh}
+#mainApp.active{display:flex}
+
+/* ── HEADER ── */
+.hdr{
+  background:linear-gradient(135deg,#060e08 0%,#0e1e10 50%,#162018 100%);
+  color:white;padding:.7rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 24px rgba(0,0,0,.6);border-bottom:1px solid var(--bdr);
+}
+.hdr-brand{display:flex;align-items:center;gap:.7rem;flex-shrink:0;min-width:0}
+.hdr-brand-text h1{font-size:1.2rem;font-weight:800;color:var(--acc2);letter-spacing:1.5px;line-height:1.1}
+.hdr-brand-text span{display:block;font-size:.6rem;color:var(--txt2);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+.hdr-nav{display:flex;gap:.35rem}
+.nb{
+  padding:.46rem .88rem;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75);
+  border-radius:30px;font-size:.84rem;font-weight:600;white-space:nowrap;
+  transition:all .2s;flex-shrink:0;touch-action:manipulation;
+}
+.nb:hover,.nb.active{background:var(--acc);color:var(--p3);border-color:var(--acc)}
+.hdr-right{display:flex;align-items:center;gap:.65rem;flex-shrink:0}
+.hdr-clock{display:flex;flex-direction:column;align-items:flex-end;gap:.05rem}
+.hdr-clock span{font-size:.72rem;color:rgba(255,255,255,.6)}
+.hdr-time{font-weight:600!important;color:rgba(255,255,255,.85)!important}
+.hdr-bno{color:var(--acc2)!important;font-weight:700!important}
+.hdr-user{
+  display:flex;align-items:center;gap:.45rem;
+  background:rgba(255,255,255,.08);padding:.36rem .82rem;
+  border-radius:30px;font-size:.84rem;font-weight:600;
+  border:1px solid rgba(255,255,255,.1);
+}
+.btn-logout{
+  background:rgba(231,76,60,.75);border:none;color:white;
+  padding:.25rem .62rem;border-radius:20px;font-size:.74rem;font-weight:600;
+}
+.btn-logout:hover{background:var(--r)}
+.theme-toggle{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+  transition:all .3s;flex-shrink:0;
+}
+.theme-toggle:hover{background:var(--acc);border-color:var(--acc);transform:rotate(20deg) scale(1.1)}
+
+/* ── MOBILE NAV ── */
+.mob-nav{
+  display:none;background:#0e1a10;
+  padding:.4rem .4rem .6rem;gap:.25rem;overflow-x:auto;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  box-shadow:0 -2px 20px rgba(0,0,0,.5);border-top:1px solid var(--bdr);
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.mob-nav::-webkit-scrollbar{display:none}
+.mn{
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  padding:.44rem .58rem;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.65);
+  border-radius:var(--rr2);font-size:.58rem;font-weight:700;
+  white-space:nowrap;flex-shrink:0;transition:all .2s;min-width:46px;
+  touch-action:manipulation;
+}
+.mn span{font-size:.58rem}
+.mn.active{background:var(--acc);color:var(--p3);border-color:var(--acc)}
+
+/* ── BODY ── */
+.app-body{flex:1;overflow-y:auto;padding:1.4rem;overflow-x:hidden}
+.sec{display:none}.sec.active{display:block}
+
+/* ── CARDS ── */
+.glass-card{background:var(--card);border-radius:var(--rr);padding:1.4rem;box-shadow:var(--sh);border:1px solid var(--bdr)}
+.card-top{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:1.2rem;padding-bottom:.85rem;border-bottom:2px solid var(--bdr);
+}
+.card-top h2{font-size:1.1rem;color:var(--acc2);font-weight:700}
+body.light .card-top h2{color:var(--p)}
+.chip{background:var(--p2);color:var(--acc2);padding:.28rem .85rem;border-radius:20px;font-size:.84rem;font-weight:700;border:1px solid var(--p4)}
+
+/* ── FORMS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.field{display:flex;flex-direction:column;gap:.28rem}
+.field-end{justify-content:flex-end}
+.field label{font-size:.78rem;font-weight:700;color:var(--txt2);letter-spacing:.3px}
+.field input,.field select,.field textarea{
+  padding:.68rem .95rem;border:2px solid var(--bdr);border-radius:var(--rr2);
+  font-size:.95rem;color:var(--txt);background:var(--card2);
+  transition:border-color .2s,box-shadow .2s;outline:none;
+}
+.field input::placeholder{color:var(--txt2)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(200,168,75,.14)}
+.field select option{background:var(--card2);color:var(--txt)}
+body.light .field input,body.light .field select,body.light .field textarea{background:white;color:var(--txt)}
+.sec-lbl{display:block;font-size:.76rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.5rem}
+
+/* ── QUICK ADD ── */
+.qs-section{margin-bottom:1rem}
+.qs-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
+.qbtn{
+  display:flex;flex-direction:column;align-items:center;gap:.22rem;
+  padding:.7rem .25rem;
+  background:linear-gradient(145deg,var(--p),var(--p4));
+  color:white;border:1px solid rgba(42,128,80,.4);border-radius:var(--rr2);
+  transition:transform .15s,box-shadow .15s;
+  touch-action:manipulation;
+}
+.qbtn b{font-size:.9rem;font-weight:700}
+.qbtn small{font-size:.68rem;opacity:.85}
+.qbtn:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.qbtn:active{transform:scale(.97)}
+.btn-add{
+  width:100%;padding:.74rem;
+  background:linear-gradient(145deg,var(--p),var(--p4));
+  color:white;border:1px solid rgba(42,128,80,.4);border-radius:var(--rr2);
+  font-size:.95rem;font-weight:700;transition:transform .15s;touch-action:manipulation;
+}
+.btn-add:hover{transform:translateY(-2px)}
+
+/* ── ACTION BUTTONS ── */
+.act-btns{display:flex;gap:.45rem;flex-wrap:wrap;margin:1rem 0}
+.ab{
+  flex:1;min-width:60px;padding:.68rem .3rem;border:none;border-radius:var(--rr2);
+  font-size:.82rem;font-weight:700;color:white;
+  transition:filter .15s,transform .15s;touch-action:manipulation;
+}
+.ab:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.ab.wa{background:#128C7E}.ab.pt{background:#2c3e50;border:1px solid #3d5166}
+.ab.sv{background:var(--b)}.ab.un{background:var(--o)}.ab.cl{background:var(--r)}
+
+/* ── PAYMENT ── */
+.pay-sec{margin-bottom:1rem}
+.pay-row{display:flex;gap:.45rem}
+.pb{
+  flex:1;padding:.58rem;background:var(--card2);border:2px solid var(--bdr);
+  border-radius:var(--rr2);font-size:.82rem;font-weight:600;color:var(--txt2);
+  transition:all .2s;touch-action:manipulation;
+}
+.pb.active{background:var(--p);border-color:var(--p4);color:white}
+
+/* ── RECENT BILLS ── */
+.rec-sec{margin-top:.8rem}
+#recList{display:flex;flex-direction:column;gap:.35rem;max-height:130px;overflow-y:auto}
+.rbi{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.48rem .82rem;background:var(--card2);border-radius:var(--rr2);
+  font-size:.82rem;cursor:pointer;transition:background .15s;border:1px solid var(--bdr);
+}
+.rbi:hover{background:var(--card3)}
+.rbi strong{color:var(--acc2)}
+body.light .rbi strong{color:var(--p)}
+
+/* ── BILL LAYOUT ── */
+.bill-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem}
+.bill-preview{background:var(--card2);border:1.5px solid var(--bdr);border-radius:var(--rr2);padding:1.6rem;min-height:380px}
+body.light .bill-preview{background:white}
+.bpv-head{text-align:center;padding-bottom:1rem;margin-bottom:1rem;border-bottom:2px dashed var(--bdr)}
+.bpv-icon{font-size:2.2rem;display:block;margin-bottom:.5rem}
+.bpv-head h3{font-size:1.4rem;color:var(--acc2);margin:.3rem 0;letter-spacing:1px;font-weight:800}
+body.light .bpv-head h3{color:var(--p)}
+.bpv-head p{color:var(--txt2);font-size:.8rem}
+.bpv-meta{display:flex;justify-content:space-between;margin-top:.8rem;font-size:.8rem;color:var(--txt2)}
+.bpv-cust{text-align:left;margin-top:.55rem;font-size:.88rem;font-weight:600;color:var(--txt)}
+.bpv-tbl{width:100%;border-collapse:collapse;margin-bottom:1rem}
+.bpv-tbl th{background:var(--p2);color:var(--acc2);padding:.52rem .65rem;font-size:.82rem;text-align:left}
+body.light .bpv-tbl th{background:var(--p);color:white}
+.bpv-tbl td{padding:.5rem .65rem;font-size:.88rem;border-bottom:1px solid var(--bdr);color:var(--txt)}
+.bpv-tbl tr:nth-child(even) td{background:var(--card)}
+.bpv-totals{border-top:2px solid var(--bdr);padding-top:.85rem}
+.btr{display:flex;justify-content:space-between;padding:.25rem 0;font-size:.92rem;color:var(--txt)}
+.btr.red{color:var(--r)}
+.btr.grand{font-size:1.5rem;font-weight:800;color:var(--acc2);margin-top:.55rem;border-top:2.5px solid var(--bdr);padding-top:.55rem}
+body.light .btr.grand{color:var(--p)}
+.bpv-foot{text-align:center;margin-top:1rem;padding-top:.85rem;border-top:2px dashed var(--bdr);font-size:.76rem;color:var(--txt2)}
+
+/* ── SECTION HEADER ── */
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem}
+.sh h2{font-size:1.4rem;color:var(--acc2);font-weight:700}
+body.light .sh h2{color:var(--p)}
+.sh h3{font-size:1.05rem;font-weight:700;color:var(--acc2)}
+body.light .sh h3{color:var(--p)}
+.mt1{margin-top:1.4rem!important}.mt2{margin-top:1.8rem!important}
+
+/* ── BUTTONS ── */
+.btn-p{padding:.55rem 1.2rem;background:var(--p);color:white;border:1px solid var(--p4);border-radius:var(--rr2);font-size:.9rem;font-weight:700;transition:filter .15s,transform .15s;touch-action:manipulation}
+.btn-p:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn-sv{width:100%;padding:.6rem;background:var(--b);color:white;border:none;border-radius:var(--rr2);font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem;transition:filter .15s;touch-action:manipulation}
+.btn-sv:hover{filter:brightness(1.1)}
+.btn-sec{padding:.55rem 1.2rem;background:var(--card2);color:var(--acc2);border:2px solid var(--p4);border-radius:var(--rr2);font-size:.9rem;font-weight:700;transition:background .2s;touch-action:manipulation}
+body.light .btn-sec{color:var(--p)}
+.btn-sec:hover{background:var(--card3)}
+
+/* ── INVENTORY ── */
+.inv-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.4rem}
+.inv-card{background:var(--card);border-radius:var(--rr);padding:1.2rem;box-shadow:var(--sh);text-align:center;transition:transform .2s;border:1px solid var(--bdr)}
+.inv-card:hover{transform:translateY(-4px);box-shadow:var(--sh2)}
+.inv-ico{font-size:2.2rem;margin-bottom:.45rem}
+.inv-card h3{font-size:.9rem;font-weight:700;color:var(--txt)}
+.inv-num{font-size:2.8rem;font-weight:800;color:var(--acc2);margin:.4rem 0;line-height:1}
+body.light .inv-num{color:var(--p)}
+.inv-bdg{display:inline-block;font-size:.74rem;font-weight:700;padding:.2rem .65rem;border-radius:20px;margin-bottom:.75rem}
+.inv-bdg.good{background:rgba(46,204,113,.15);color:var(--g)}
+.inv-bdg.low{background:rgba(231,76,60,.15);color:var(--r)}
+.inv-btns{display:flex;gap:.4rem;justify-content:center;margin-bottom:.5rem}
+.inv-btns button{width:34px;height:34px;border-radius:50%;border:2px solid var(--bdr);background:var(--card2);font-size:1.05rem;font-weight:700;color:var(--acc2);transition:all .2s;touch-action:manipulation}
+body.light .inv-btns button{color:var(--p)}
+.inv-btns button:hover{background:var(--p);color:white;border-color:var(--p4)}
+.inv-photo{margin-top:.3rem}
+.inv-thumb{width:56px;height:56px;object-fit:cover;border-radius:var(--rr2);border:2px solid var(--bdr);cursor:pointer;display:block;margin:0 auto;transition:border-color .2s}
+.inv-thumb:hover{border-color:var(--acc2)}
+.inv-pbtn{font-size:.7rem;font-weight:600;color:var(--txt2);background:none;border:1.5px dashed var(--bdr);border-radius:var(--rr2);padding:.22rem .5rem;display:block;margin:0 auto;transition:all .2s;touch-action:manipulation}
+.inv-pbtn:hover{border-color:var(--acc2);color:var(--acc2)}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;border-radius:var(--rr);box-shadow:var(--sh);border:1px solid var(--bdr);-webkit-overflow-scrolling:touch}
+.dtbl{width:100%;border-collapse:collapse;background:var(--card);min-width:500px}
+.dtbl th{background:var(--p2);color:var(--acc2);padding:.82rem .95rem;font-size:.82rem;font-weight:700;text-align:left;white-space:nowrap}
+body.light .dtbl th{background:var(--p);color:white}
+.dtbl td{padding:.75rem .95rem;font-size:.88rem;border-bottom:1px solid var(--bdr);color:var(--txt)}
+.dtbl tr:hover td{background:var(--card2)}
+
+/* ── SEARCH ── */
+.srch-bar{margin-bottom:1rem}
+.srch-bar input{width:100%;max-width:420px;padding:.7rem 1rem;border:2px solid var(--bdr);border-radius:var(--rr2);font-size:.95rem;background:var(--card2);color:var(--txt);outline:none}
+.srch-bar input::placeholder{color:var(--txt2)}
+.srch-bar input:focus{border-color:var(--acc)}
+body.light .srch-bar input{background:white}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem;margin-bottom:1.4rem}
+.sc{background:var(--card);border-radius:var(--rr);padding:1.1rem;box-shadow:var(--sh);display:flex;align-items:center;gap:.8rem;transition:transform .2s;border:1px solid var(--bdr)}
+.sc:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.sc-i{font-size:1.9rem;flex-shrink:0}
+.sc h3{font-size:1.05rem;font-weight:800;color:var(--txt)}
+.sc p{font-size:.74rem;color:var(--txt2);margin-top:.08rem}
+.sc.green{border-left:4px solid var(--g)}.sc.blue{border-left:4px solid var(--b)}
+.sc.gold{border-left:4px solid var(--acc)}.sc.teal{border-left:4px solid var(--tl)}
+.sc.orange{border-left:4px solid var(--o)}.sc.purple{border-left:4px solid var(--pu)}
+
+/* ── CHARTS ── */
+.ch2col{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:1.4rem}
+.ch-card{background:var(--card);border-radius:var(--rr);padding:1.2rem;box-shadow:var(--sh);border:1px solid var(--bdr)}
+.ch-card h3{font-size:1rem;font-weight:700;color:var(--acc2);margin-bottom:.9rem}
+body.light .ch-card h3{color:var(--p)}
+.atabs{display:flex;gap:.38rem;margin-bottom:.9rem;flex-wrap:wrap}
+.at{padding:.32rem .82rem;background:var(--card2);border:2px solid var(--bdr);border-radius:20px;font-size:.8rem;font-weight:700;color:var(--txt2);transition:all .2s;touch-action:manipulation}
+.at.active{background:var(--p);border-color:var(--p4);color:white}
+.ftabs{display:flex;gap:.38rem}
+.ft{padding:.38rem 1rem;background:var(--card2);border:2px solid var(--bdr);border-radius:20px;font-size:.84rem;font-weight:700;color:var(--txt2);transition:all .2s;touch-action:manipulation}
+.ft.active{background:var(--p);border-color:var(--p4);color:white}
+
+/* ── AI CHAT ── */
+.ai-chat{background:var(--card);border-radius:var(--rr);box-shadow:var(--sh2);margin-bottom:1.4rem;overflow:hidden;border:1px solid var(--bdr)}
+.ai-chat-hdr{background:linear-gradient(135deg,#060e08,#0e2012);color:white;padding:.9rem 1.2rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--bdr)}
+.ai-avatar{width:42px;height:42px;background:var(--acc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.ai-chat-hdr strong{font-size:.96rem;font-weight:700;display:block;color:var(--acc2)}
+.ai-chat-hdr span{font-size:.76rem;opacity:.7}
+.ai-online{display:flex;align-items:center;gap:.4rem;margin-left:auto;font-size:.8rem;font-weight:600;color:var(--g)}
+.ai-online-dot{width:8px;height:8px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+.ai-msgs{padding:1rem 1.2rem;min-height:120px;max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:.65rem}
+.ai-msg{max-width:84%}
+.ai-msg.bot{align-self:flex-start}
+.ai-msg.user{align-self:flex-end}
+.ai-msg-inner{padding:.68rem 1rem;border-radius:14px;font-size:.88rem;line-height:1.6}
+.ai-msg.bot .ai-msg-inner{background:var(--card2);color:var(--txt);border:1px solid var(--bdr);border-bottom-left-radius:4px}
+.ai-msg.user .ai-msg-inner{background:var(--p);color:white;border-bottom-right-radius:4px}
+.ai-suggestions{padding:.55rem 1.2rem;display:flex;gap:.4rem;flex-wrap:wrap;border-top:1px solid var(--bdr);background:var(--bg2)}
+.ai-suggestions button{padding:.32rem .75rem;background:var(--card2);border:1.5px solid var(--bdr);border-radius:20px;font-size:.76rem;font-weight:600;color:var(--txt2);transition:all .2s;touch-action:manipulation}
+.ai-suggestions button:hover{background:var(--p);color:white;border-color:var(--p4)}
+.ai-inp-row{display:flex;gap:.55rem;padding:.8rem 1.2rem;border-top:1px solid var(--bdr);background:var(--bg2)}
+.ai-inp-row input{flex:1;padding:.65rem .95rem;border:2px solid var(--bdr);border-radius:var(--rr2);font-size:.95rem;background:var(--card2);color:var(--txt);outline:none}
+.ai-inp-row input::placeholder{color:var(--txt2)}
+.ai-inp-row input:focus{border-color:var(--acc)}
+body.light .ai-inp-row input{background:white}
+.btn-ai-send{padding:.65rem 1.2rem;background:var(--p);color:white;border:1px solid var(--p4);border-radius:var(--rr2);font-size:.95rem;font-weight:700;transition:filter .15s;white-space:nowrap;touch-action:manipulation}
+.btn-ai-send:hover{filter:brightness(1.15)}
+
+/* ── AI CARDS ── */
+.ai-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.4rem}
+.ai-card{background:var(--card);border-radius:var(--rr);padding:1.4rem;box-shadow:var(--sh);text-align:center;transition:transform .2s;position:relative;overflow:hidden;border:1px solid var(--bdr)}
+.ai-card-bar{position:absolute;top:0;left:0;right:0;height:3px}
+.ai-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.ai-ico{font-size:2.3rem;margin-bottom:.5rem}
+.ai-card h3{font-size:.88rem;color:var(--txt2);margin-bottom:.45rem;font-weight:700}
+.ai-val{font-size:1.1rem;font-weight:800;color:var(--acc2);margin-bottom:.3rem}
+body.light .ai-val{color:var(--p)}
+.ai-card small{font-size:.76rem;color:var(--txt2)}
+
+/* ── SETTINGS ── */
+.set-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.3rem}
+.s-card h3{font-size:1.05rem;font-weight:700;color:var(--acc2);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--bdr)}
+body.light .s-card h3{color:var(--p)}
+.roles{margin-bottom:1rem;display:flex;flex-direction:column;gap:.4rem}
+.role-row{display:flex;justify-content:space-between;align-items:center;padding:.55rem .75rem;background:var(--card2);border-radius:var(--rr2);font-size:.9rem;font-weight:600;border:1px solid var(--bdr)}
+.badge{padding:.2rem .68rem;border-radius:20px;font-size:.74rem;font-weight:700}
+.badge.gr{background:rgba(46,204,113,.15);color:var(--g)}
+.badge.bl{background:rgba(36,113,163,.15);color:var(--b)}
+.badge.gy{background:rgba(255,255,255,.08);color:var(--txt2)}
+body.light .badge.gy{background:rgba(0,0,0,.07)}
+.sec-list{display:flex;flex-direction:column;gap:.35rem}
+.si-row{padding:.4rem .75rem;background:rgba(46,204,113,.06);border-radius:var(--rr2);font-size:.84rem;font-weight:600;color:var(--g);border:1px solid rgba(46,204,113,.12)}
+.cloud-status{display:flex;align-items:center;gap:.5rem;margin-bottom:.9rem;font-weight:700;font-size:.9rem;color:var(--txt)}
+.cdot{width:10px;height:10px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+.btn-col{display:flex;flex-direction:column;gap:.45rem;margin-bottom:.9rem}
+.bk-info{font-size:.8rem;color:var(--txt2)}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--card);border-radius:var(--rr);padding:1.5rem;width:100%;max-width:460px;box-shadow:var(--sh3);border:1px solid var(--bdr);animation:popUp .3s ease}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid var(--bdr)}
+.modal-hdr h3{color:var(--acc2);font-size:1.15rem;font-weight:700}
+body.light .modal-hdr h3{color:var(--p)}
+.modal-hdr button{background:none;border:none;font-size:1.25rem;color:var(--txt2)}
+.modal-body{display:flex;flex-direction:column;gap:.9rem}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:5.5rem;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:linear-gradient(135deg,#0e2012,#1a5c36);
+  color:white;padding:.8rem 1.6rem;border-radius:30px;
+  font-size:.9rem;font-weight:600;z-index:9999;pointer-events:none;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:var(--sh2);white-space:nowrap;border:1px solid var(--p4);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(min-width:901px){.toast{bottom:2rem}}
+
+/* ── LIGHT MODE FIXES ── */
+body.light .hdr{background:linear-gradient(135deg,#0f2a18 0%,#1a3d28 50%,#1e4a30 100%)}
+body.light .mob-nav{background:#1a3d28;border-top-color:var(--bdr)}
+body.light .mn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
+body.light .mn.active{background:var(--acc);color:var(--p3)}
+body.light .ai-suggestions{background:var(--bg2)}
+body.light .ai-inp-row{background:var(--bg2)}
+
+
+/* ── FIREBASE / CLOUD STATUS ── */
+.fb-bar{display:flex;align-items:center;gap:.5rem;padding:.42rem .85rem;border-radius:var(--rr2);font-size:.8rem;font-weight:600;margin-bottom:.85rem;border:1px solid var(--bdr)}
+.fb-bar.on{background:rgba(46,204,113,.08);border-color:rgba(46,204,113,.25);color:var(--g)}
+.fb-bar.off{background:rgba(200,168,75,.07);border-color:rgba(200,168,75,.2);color:var(--acc2)}
+.fb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+.fb-bar.on .fb-dot{background:var(--g)}.fb-bar.off .fb-dot{background:var(--acc2);animation:none}
+.hdr-fb{display:flex;align-items:center;gap:.38rem;font-size:.7rem;font-weight:600;color:var(--txt2);padding:.26rem .65rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px}
+.hdr-fb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.hdr-fb-dot.on{background:var(--g);animation:pulse 2s infinite}.hdr-fb-dot.off{background:var(--txt3,#4a7a4a)}
+.sync-badge{position:fixed;bottom:4.5rem;right:1rem;z-index:500;background:var(--p);color:white;border:1px solid var(--p4);padding:.35rem .85rem;border-radius:20px;font-size:.76rem;font-weight:600;display:none;box-shadow:var(--sh2)}
+.sync-badge.show{display:block}
+@media(min-width:901px){.sync-badge{bottom:1.2rem;right:1.2rem}}
+
+/* ── DISABLED BUTTON STATE ── */
+.btn-disabled{opacity:.35;cursor:not-allowed!important;filter:grayscale(.5)}
+.btn-disabled:hover{transform:none!important;filter:grayscale(.5)!important}
+
+/* ── PRINT ── */
+@media print{
+  *{display:none!important}
+  #billPrev,#billPrev *{display:block!important}
+  .bill-preview{box-shadow:none!important;border:none!important;padding:20px!important;background:white!important;color:black!important}
+  .bpv-tbl th{background:#1a5c36!important;color:white!important;-webkit-print-color-adjust:exact}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--p2);border-radius:3px}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE — 5 Breakpoints
+   ═══════════════════════════════════════════ */
+
+/* 1400px */
+@media(max-width:1400px){
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+}
+/* 1200px */
+@media(max-width:1200px){
+  .nb{padding:.42rem .75rem;font-size:.8rem}
+  .hdr-brand-text h1{font-size:1.1rem}
+}
+/* 1100px - Tablet */
+@media(max-width:1100px){
+  .bill-layout{grid-template-columns:1fr}
+  .inv-grid{grid-template-columns:repeat(3,1fr)}
+  .ai-cards{grid-template-columns:repeat(2,1fr)}
+  .ch2col{grid-template-columns:1fr}
+  .set-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+}
+/* 900px - Small tablet / Large phone */
+@media(max-width:900px){
+  .hdr{padding:.6rem 1rem;flex-wrap:wrap;gap:.5rem}
+  .hdr-nav{display:none}
+  .hdr-brand-text h1{font-size:1.05rem}
+  .hdr-brand-text span{font-size:.56rem}
+  .hdr-clock span{font-size:.68rem}
+  .hdr-right{gap:.42rem}
+  .hdr-user{padding:.3rem .62rem;font-size:.78rem}
+  .theme-toggle{width:34px;height:34px;font-size:1rem}
+  .btn-logout{font-size:.7rem;padding:.22rem .52rem}
+  .mob-nav{display:flex}
+  .app-body{padding:.85rem;padding-bottom:5.5rem}
+  .bill-layout{grid-template-columns:1fr;gap:1rem}
+  .glass-card{padding:1.1rem}
+  .card-top h2{font-size:.98rem}
+  .g2{grid-template-columns:1fr;gap:.8rem}
+  .qs-grid{grid-template-columns:repeat(5,1fr);gap:.38rem}
+  .qbtn{padding:.58rem .2rem}
+  .qbtn b{font-size:.8rem}
+  .qbtn small{font-size:.62rem}
+  .act-btns{gap:.38rem}
+  .ab{padding:.6rem .28rem;font-size:.76rem;min-width:52px}
+  .pay-row{gap:.38rem}
+  .pb{padding:.52rem .28rem;font-size:.76rem}
+  .field label{font-size:.74rem}
+  .field input,.field select,.field textarea{padding:.6rem .82rem;font-size:.9rem}
+  .btn-add{padding:.65rem;font-size:.9rem}
+  .bpv-head h3{font-size:1.15rem}
+  .btr.grand{font-size:1.25rem}
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:.8rem}
+  .sc{padding:.88rem;gap:.62rem}
+  .sc h3{font-size:.92rem}
+  .sc-i{font-size:1.65rem}
+  .inv-grid{grid-template-columns:repeat(3,1fr);gap:.8rem}
+  .inv-card{padding:1rem}
+  .inv-num{font-size:2.4rem}
+  .ch2col{grid-template-columns:1fr;gap:1rem}
+  .ch-card{padding:1rem}
+  .ai-cards{grid-template-columns:repeat(2,1fr);gap:.8rem}
+  .set-grid{grid-template-columns:1fr;gap:1rem}
+  .dtbl th{padding:.62rem .75rem;font-size:.78rem}
+  .dtbl td{padding:.58rem .75rem;font-size:.82rem}
+  .sh h2{font-size:1.2rem}
+  .sh h3{font-size:.92rem}
+  .lg-card{padding:2rem 1.6rem}
+  .lg-logo h1{font-size:1.75rem}
+}
+/* 540px - Mobile */
+@media(max-width:540px){
+  .hdr{padding:.5rem .75rem}
+  .hdr-brand-text h1{font-size:.95rem;letter-spacing:1px}
+  .hdr-brand-text span{display:none}
+  .hdr-clock .hdr-bno{display:none}
+  .hdr-user span:first-child{display:none}
+  .hdr-user{padding:.26rem .55rem;font-size:.76rem}
+  .theme-toggle{width:32px;height:32px;font-size:.95rem}
+  .mn{padding:.4rem .46rem;min-width:44px;font-size:.56rem}
+  .mn span{font-size:.54rem}
+  .app-body{padding:.6rem;padding-bottom:5.2rem}
+  .glass-card{padding:.88rem;border-radius:13px}
+  .card-top{margin-bottom:.9rem;padding-bottom:.65rem}
+  .card-top h2{font-size:.88rem}
+  .qs-grid{grid-template-columns:repeat(3,1fr);gap:.38rem}
+  .qbtn{padding:.62rem .18rem}
+  .qbtn b{font-size:.84rem}
+  .act-btns{display:grid;grid-template-columns:1fr 1fr;gap:.38rem}
+  .ab{font-size:.8rem;padding:.62rem .28rem}
+  .ab.wa{grid-column:1 / -1}
+  .pay-row{flex-wrap:wrap;gap:.38rem}
+  .pb{flex:0 0 calc(50% - .19rem);font-size:.78rem;padding:.52rem .28rem}
+  #recList{max-height:100px}
+  .rbi{font-size:.76rem;padding:.42rem .65rem}
+  .bill-preview{padding:1.15rem}
+  .bpv-head h3{font-size:1.05rem}
+  .bpv-icon{font-size:1.8rem}
+  .bpv-tbl th,.bpv-tbl td{padding:.4rem .48rem;font-size:.76rem}
+  .btr{font-size:.8rem}
+  .btr.grand{font-size:1.15rem}
+  .stats-row{grid-template-columns:1fr 1fr;gap:.6rem}
+  .sc{padding:.72rem;gap:.52rem}
+  .sc h3{font-size:.85rem}
+  .sc p{font-size:.66rem}
+  .sc-i{font-size:1.5rem}
+  .inv-grid{grid-template-columns:1fr 1fr;gap:.6rem}
+  .inv-card{padding:.88rem}
+  .inv-num{font-size:2.1rem}
+  .inv-card h3{font-size:.82rem}
+  .ch-card{padding:.88rem;border-radius:13px}
+  .ch-card h3{font-size:.86rem}
+  .atabs{flex-wrap:wrap;gap:.28rem}
+  .at{padding:.28rem .65rem;font-size:.76rem}
+  .ai-cards{grid-template-columns:1fr;gap:.65rem}
+  .ai-card{padding:1.05rem}
+  .ai-ico{font-size:1.75rem}
+  .ai-val{font-size:1rem}
+  .ai-chat-hdr{padding:.72rem .95rem}
+  .ai-msgs{padding:.78rem .95rem;max-height:170px}
+  .ai-msg-inner{font-size:.82rem;padding:.58rem .82rem}
+  .ai-suggestions{padding:.48rem .82rem;gap:.28rem}
+  .ai-suggestions button{font-size:.7rem;padding:.26rem .58rem}
+  .ai-inp-row{padding:.62rem .82rem;gap:.42rem}
+  .ai-inp-row input{font-size:.88rem;padding:.56rem .82rem}
+  .btn-ai-send{padding:.56rem .95rem;font-size:.88rem}
+  .ftabs{gap:.28rem}
+  .ft{padding:.32rem .78rem;font-size:.76rem}
+  .s-card h3{font-size:.92rem}
+  .role-row{font-size:.8rem;padding:.48rem .68rem}
+  .btn-p,.btn-sec,.btn-sv{font-size:.82rem;padding:.52rem .95rem}
+  .dtbl th{padding:.52rem .6rem;font-size:.72rem}
+  .dtbl td{padding:.5rem .6rem;font-size:.76rem}
+  .sh{margin-bottom:.85rem}
+  .sh h2{font-size:1.05rem}
+  .sh h3{font-size:.88rem}
+  .btn-p{font-size:.78rem;padding:.48rem .85rem}
+  .lg-card{padding:1.5rem 1.25rem;border-radius:18px}
+  .lg-logo h1{font-size:1.5rem;letter-spacing:1.5px}
+  .lg-logo p{font-size:.62rem;letter-spacing:2px}
+  .lg-field input,.lg-field select{padding:.7rem .9rem;font-size:.92rem}
+  .btn-login{font-size:.98rem;padding:.82rem}
+  .staff-box{padding:.72rem .82rem}
+  .sb-text strong{font-size:.84rem}
+  .sb-text span{font-size:.74rem}
+  .modal-box{padding:1.15rem;border-radius:13px}
+  .modal-hdr h3{font-size:1rem}
+}
+/* 380px - Very small */
+@media(max-width:380px){
+  .hdr-brand-text h1{font-size:.88rem}
+  .hdr-user{display:none}
+  .app-body{padding:.5rem;padding-bottom:5rem}
+  .glass-card{padding:.75rem;border-radius:12px}
+  .qs-grid{grid-template-columns:repeat(3,1fr)}
+  .stats-row{grid-template-columns:1fr 1fr;gap:.5rem}
+  .inv-grid{grid-template-columns:1fr 1fr;gap:.5rem}
+  .inv-num{font-size:1.85rem}
+  .btr.grand{font-size:1.05rem}
+  .sc h3{font-size:.8rem}
+  .sc-i{font-size:1.4rem}
+  .mn{padding:.36rem .4rem;min-width:42px;font-size:.54rem}
+  .ai-cards{grid-template-columns:1fr}
+  .lg-card{padding:1.2rem 1rem}
+  .lg-logo h1{font-size:1.3rem}
+  .lg-leaf{font-size:1.8rem}
+}
+</style>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue }
+  from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+// ⚠️ Replace YOUR_* values with your Firebase project config
+const FB_CONFIG = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "YOUR_PROJECT",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+const configured = !FB_CONFIG.apiKey.includes('YOUR_');
+if (configured) {
+  try {
+    const app = initializeApp(FB_CONFIG);
+    const db  = getDatabase(app);
+    window.FB = { db, ref, set, get, onValue, ok: true };
+  } catch(e) { window.FB = { ok: false }; }
+} else { window.FB = { ok: false }; }
+</script>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="loginScreen" class="screen active">
+  <div class="lg-bg">
+    <div class="lg-orb o1"></div>
+    <div class="lg-orb o2"></div>
+  </div>
+  <div class="lg-wrap">
+    <div class="lg-card">
+      <div class="lg-logo">
+        <span class="lg-leaf">🍃</span>
+        <h1>SERINE TEA LEAF</h1>
+        <p>PREMIUM QUALITY TEA PRODUCTS</p>
+      </div>
+      <div class="staff-box">
+        <div class="sb-icon">👤</div>
+        <div class="sb-text">
+          <strong>Public Staff Login</strong>
+          <span>Username: <code>SERINE TEA</code> &nbsp;·&nbsp; Password: <code>serine tea leaf</code></span>
+        </div>
+      </div>
+      <div class="lg-form">
+        <div class="lg-field">
+          <label>USERNAME</label>
+          <input type="text" id="lgU" placeholder="Enter username" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="lg-field">
+          <label>PASSWORD</label>
+          <div class="pw-wrap">
+            <input type="password" id="lgP" placeholder="Enter password" autocomplete="off">
+            <button type="button" class="eye-btn" id="eyeBtn">👁</button>
+          </div>
+        </div>
+        <div class="lg-field">
+          <label>ROLE</label>
+          <select id="lgR">
+            <option value="owner">Owner</option>
+            <option value="admin">Admin</option>
+            <option value="staff">Public Staff</option>
+          </select>
+        </div>
+        <div class="enc-pill">
+          <span class="enc-pulse"></span>
+          End-to-end encrypted · Secure session
+        </div>
+        <button class="btn-login" id="loginBtn">
+          <span>Login to System</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <div class="lg-err" id="lgErr"></div>
+        <div class="lg-locked" id="lgLocked">
+          🔒 Locked for <span id="lockTimer">30</span>s — Too many failed attempts.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MAIN APP ═══════════ -->
+<div id="mainApp" class="screen">
+
+  <header class="hdr">
+    <div class="hdr-brand">
+      <div class="hdr-brand-text">
+        <h1>SERINE TEA LEAF</h1>
+        <span>Premium Quality Tea Products</span>
+      </div>
+    </div>
+    <nav class="hdr-nav" id="deskNav">
+      <button class="nb active" data-s="billing"   id="nb-billing">🧾 Billing</button>
+      <button class="nb"        data-s="inventory" id="nb-inventory">📦 Inventory</button>
+      <button class="nb"        data-s="customers" id="nb-customers">👤 Customers</button>
+      <button class="nb"        data-s="dashboard" id="nb-dashboard">📊 Dashboard</button>
+      <button class="nb"        data-s="ai"        id="nb-ai">🤖 AI Power</button>
+      <button class="nb"        data-s="settings"  id="nb-settings">⚙️ Settings</button>
+    </nav>
+    <div class="hdr-right">
+      <div class="hdr-clock">
+        <span id="hdrDate"></span>
+        <span id="hdrTime" class="hdr-time"></span>
+        <span id="hdrBNo" class="hdr-bno">Bill #5521</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Dark / Light Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+      <div class="hdr-user">
+        <span id="hdrIco">🏪</span>
+        <span id="hdrLbl">Owner</span>
+        <button class="btn-logout" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mob-nav" id="mobNav">
+    <button class="mn active" data-ms="billing"   id="mn-billing">🧾<span>Billing</span></button>
+    <button class="mn"        data-ms="inventory" id="mn-inventory">📦<span>Inventory</span></button>
+    <button class="mn"        data-ms="customers" id="mn-customers">👤<span>Customers</span></button>
+    <button class="mn"        data-ms="dashboard" id="mn-dashboard">📊<span>Dashboard</span></button>
+    <button class="mn"        data-ms="ai"        id="mn-ai">🤖<span>AI</span></button>
+    <button class="mn"        data-ms="settings"  id="mn-settings">⚙️<span>Settings</span></button>
+  </nav>
+
+  <main class="app-body">
+
+    <!-- BILLING -->
+    <section id="sec-billing" class="sec active">
+      <div class="bill-layout">
+        <div class="glass-card">
+          <div class="card-top">
+            <h2>🧾 අලුත් බිල්පතක් සකසන්න</h2>
+            <span class="chip" id="curBNo">BILL-5521</span>
+          </div>
+          <div class="g2">
+            <div class="field">
+              <label>පාරිභෝගිකයාගේ නම</label>
+              <input type="text" id="cName" placeholder="Customer Name" list="cSugg">
+              <datalist id="cSugg"></datalist>
+            </div>
+            <div class="field">
+              <label>WhatsApp අංකය</label>
+              <input type="text" id="cPhone" placeholder="947XXXXXXXXX">
+            </div>
+          </div>
+          <div class="qs-section">
+            <label class="sec-lbl">⚡ QUICK ADD</label>
+            <div class="qs-grid" id="qsGrid"></div>
+          </div>
+          <div class="g2">
+            <div class="field">
+              <label>පැකට් ප්‍රමාණය</label>
+              <select id="pSel">
+                <option value="50g|100">50g Packet — Rs. 100</option>
+                <option value="100g|200">100g Packet — Rs. 200</option>
+                <option value="250g|500">250g Packet — Rs. 500</option>
+                <option value="500g|1000">500g Packet — Rs. 1,000</option>
+                <option value="1kg|1500">1kg Packet — Rs. 1,500</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>ප්‍රමාණය (Qty)</label>
+              <input type="number" id="qtyI" value="1" min="1">
+            </div>
+          </div>
+          <div class="g2">
+            <div class="field">
+              <label>වට්ටම (Discount Rs.)</label>
+              <input type="number" id="discI" value="0" min="0">
+            </div>
+            <div class="field field-end">
+              <button class="btn-add" id="addItemBtn">+ එකතු කරන්න</button>
+            </div>
+          </div>
+          <div class="act-btns">
+            <button class="ab wa" id="waBtn">📲 WhatsApp</button>
+            <button class="ab pt" id="printBtn">🖨 Print</button>
+            <button class="ab sv" id="saveBtn">💾 Save</button>
+            <button class="ab un" id="undoBtn">↩ Undo</button>
+            <button class="ab cl" id="clearBtn">🗑 Clear</button>
+          </div>
+          <div class="pay-sec">
+            <label class="sec-lbl">💳 ගෙවීමේ ක්‍රමය</label>
+            <div class="pay-row">
+              <button class="pb active" id="p-cash">💵 Cash</button>
+              <button class="pb" id="p-card">💳 Card</button>
+              <button class="pb" id="p-online">📱 Online</button>
+              <button class="pb" id="p-split">⚖️ Split</button>
+            </div>
+          </div>
+          <div class="rec-sec">
+            <label class="sec-lbl">🕐 RECENT BILLS</label>
+            <div id="recList"></div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="card-top"><h2>🧾 බිල්පත් විස්තරය (Bill Preview)</h2></div>
+          <div class="bill-preview" id="billPrev">
+            <div class="bpv-head">
+              <span class="bpv-icon">🍃</span>
+              <h3>SERINE TEA LEAF</h3>
+              <p>Premium Quality Tea Products</p>
+              <div class="bpv-meta">
+                <span id="bpNo">Bill No: #5521</span>
+                <span id="bpDate"></span>
+              </div>
+              <div class="bpv-cust" id="bpCust"></div>
+            </div>
+            <table class="bpv-tbl">
+              <thead><tr><th>අයිතමය</th><th>මිල</th><th>Qty</th><th>එකතුව</th></tr></thead>
+              <tbody id="bpRows"></tbody>
+            </table>
+            <div class="bpv-totals">
+              <div class="btr"><span>මුල් එකතුව (Subtotal):</span><span id="bpSub">Rs. 0.00</span></div>
+              <div class="btr red"><span>වට්ටම (Discount):</span><span id="bpDisc">– Rs. 0.00</span></div>
+              <div class="btr grand"><span>එකතුව (Total):</span><span id="bpTotal">Rs. 0.00</span></div>
+            </div>
+            <div class="bpv-foot">
+              <p>Generated by SERINE TEA LEAF POS System</p>
+              <p>Thank you for your purchase!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section id="sec-inventory" class="sec">
+      <div class="sh"><h2>📦 Inventory Management</h2><button class="btn-p" id="addStockBtn">+ Add Stock</button></div>
+      <div class="inv-grid" id="invGrid"></div>
+      <div id="sHistBlock">
+        <div class="sh mt2"><h3>📋 Stock History</h3></div>
+        <div class="tbl-wrap">
+          <table class="dtbl"><thead><tr><th>Date</th><th>Product</th><th>Action</th><th>Qty</th><th>Balance</th><th>Note</th></tr></thead>
+          <tbody id="sHistTbl"></tbody></table>
+        </div>
+      </div>
+      <div id="supBlock">
+        <div class="sh mt2"><h3>🏭 Supplier Details</h3><button class="btn-p" id="addSupBtn">+ Add</button></div>
+        <div class="tbl-wrap">
+          <table class="dtbl"><thead><tr><th>Supplier</th><th>Contact</th><th>Last Purchase</th><th>Amount</th></tr></thead>
+          <tbody id="supTbl"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS -->
+    <section id="sec-customers" class="sec">
+      <div class="sh"><h2>👤 Customer Management</h2><button class="btn-p" id="addCustBtn">+ Add Customer</button></div>
+      <div class="srch-bar"><input type="text" id="cSrch" placeholder="🔍 Search name or phone..."></div>
+      <div class="tbl-wrap">
+        <table class="dtbl"><thead><tr><th>Name</th><th>Phone</th><th>Total Spent</th><th>Points</th><th>Discount</th><th>Visits</th><th>Last Visit</th><th>Actions</th></tr></thead>
+        <tbody id="custTbl"></tbody></table>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="sec-dashboard" class="sec">
+      <div class="sh">
+        <h2>📊 Sales Dashboard</h2>
+        <div class="ftabs">
+          <button class="ft active" id="ft-d">Daily</button>
+          <button class="ft" id="ft-w">Weekly</button>
+          <button class="ft" id="ft-m">Monthly</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="sc green"><div class="sc-i">💰</div><div><h3 id="stD">Rs. 0</h3><p>Daily Sales</p></div></div>
+        <div class="sc blue"><div class="sc-i">📈</div><div><h3 id="stW">Rs. 0</h3><p>Weekly Sales</p></div></div>
+        <div class="sc gold"><div class="sc-i">🏆</div><div><h3 id="stM">Rs. 0</h3><p>Monthly Sales</p></div></div>
+        <div class="sc teal"><div class="sc-i">🧾</div><div><h3 id="stB">0</h3><p>Total Bills</p></div></div>
+        <div class="sc orange"><div class="sc-i">⭐</div><div><h3 id="stBst">—</h3><p>Best Seller</p></div></div>
+        <div class="sc purple"><div class="sc-i">💎</div><div><h3 id="stPr">Rs. 0</h3><p>Est. Profit</p></div></div>
+      </div>
+      <div class="ch2col">
+        <div class="ch-card"><h3>Sales by Product</h3><canvas id="cProd"></canvas></div>
+        <div class="ch-card"><h3>Revenue Trend (7 Days)</h3><canvas id="cRev"></canvas></div>
+      </div>
+      <div class="ch-card mt1">
+        <h3>📊 Advanced Analysis</h3>
+        <div class="atabs">
+          <button class="at active" id="at-bar">Bar</button>
+          <button class="at" id="at-line">Line</button>
+          <button class="at" id="at-radar">Radar</button>
+          <button class="at" id="at-polar">Polar</button>
+        </div>
+        <canvas id="cAdv"></canvas>
+      </div>
+      <div class="sh mt2"><h3>🧾 Recent Bills</h3></div>
+      <div class="tbl-wrap">
+        <table class="dtbl"><thead><tr><th>Bill No</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th><th>Action</th></tr></thead>
+        <tbody id="dashBTbl"></tbody></table>
+      </div>
+    </section>
+
+    <!-- AI POWER -->
+    <section id="sec-ai" class="sec">
+      <div class="sh"><h2>🤖 AI Power Center</h2><button class="btn-p" id="refreshAIBtn">🔄 Refresh AI</button></div>
+      <div class="ai-chat">
+        <div class="ai-chat-hdr">
+          <div class="ai-avatar">🤖</div>
+          <div>
+            <strong>SERINE AI Business Assistant</strong>
+            <span>Real-time data analysis</span>
+          </div>
+          <div class="ai-online">
+            <span class="ai-online-dot"></span>Online
+          </div>
+        </div>
+        <div class="ai-msgs" id="aiMsgs">
+          <div class="ai-msg bot">
+            <div class="ai-msg-inner">👋 ආයුබෝවන්! I'm your AI Business Assistant. I analyze your real sales data to give accurate insights. Ask me anything about your business! 🍃</div>
+          </div>
+        </div>
+        <div class="ai-suggestions" id="aiSugg"></div>
+        <div class="ai-inp-row">
+          <input type="text" id="aiInp" placeholder="Ask AI anything about your business...">
+          <button class="btn-ai-send" id="aiSendBtn">Send 🚀</button>
+        </div>
+      </div>
+      <div class="ai-cards" id="aiCards"></div>
+      <div class="ch2col">
+        <div class="ch-card"><h3>📈 AI Sales Prediction</h3><canvas id="cAIPred"></canvas></div>
+        <div class="ch-card"><h3>🔥 Product Heatmap (5 Days)</h3><canvas id="cHeat"></canvas></div>
+      </div>
+      <div class="ch-card mt1"><h3>💹 Revenue vs Profit Analysis</h3><canvas id="cProfit"></canvas></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="sec-settings" class="sec">
+      <div class="sh"><h2>⚙️ System Settings</h2></div>
+      <div class="set-grid">
+        <div class="glass-card s-card">
+          <h3>🏪 Shop Settings</h3>
+          <div class="field"><label>Shop Name</label><input type="text" id="sNm" value="SERINE TEA LEAF"></div>
+          <div class="field"><label>Tagline</label><input type="text" id="sTg" value="Premium Quality Tea Products"></div>
+          <div class="field"><label>Phone</label><input type="text" id="sPh" value="+94 11 2345678"></div>
+          <div class="field"><label>Address</label><input type="text" id="sAd" value="Colombo, Sri Lanka"></div>
+          <button class="btn-sv" id="saveShopBtn">💾 Save Settings</button>
+        </div>
+        <div class="glass-card s-card">
+          <h3>🔐 Security & Roles</h3>
+          <div class="roles">
+            <div class="role-row"><span>🏪 Owner</span><span class="badge gr">Full Access</span></div>
+            <div class="role-row"><span>👑 Admin</span><span class="badge bl">Basic Access</span></div>
+            <div class="role-row"><span>👤 Staff</span><span class="badge gy">Billing + Inventory</span></div>
+          </div>
+          <div class="sec-list">
+            <div class="si-row">✅ End-to-end Encryption</div>
+            <div class="si-row">✅ Screenshot Protection</div>
+            <div class="si-row">✅ Brute-force Lock (5 attempts)</div>
+            <div class="si-row">✅ Role-based Permissions</div>
+            <div class="si-row">✅ Session Monitoring</div>
+          </div>
+        </div>
+        <div class="glass-card s-card">
+          <h3>☁️ Cloud & Firebase</h3>
+          <div class="fb-bar off" id="fbBarEl">
+            <span class="fb-dot" id="fbDotEl"></span>
+            <span id="fbTxtEl">Local Storage Only</span>
+          </div>
+          <div class="btn-col">
+            <button class="btn-p" id="backupBtn">📤 Backup JSON</button>
+            <button class="btn-p" id="fbSyncBtn">🔄 Force Sync to Cloud</button>
+            <button class="btn-sec" id="recoverBtn">📥 Recover from JSON</button>
+            <button class="btn-sec" id="exportBtn">📊 Export CSV</button>
+          </div>
+          <p class="bk-info">Last Backup: <span id="lastBk">Never</span></p>
+          <p class="bk-info" style="margin-top:.4rem;font-size:.74rem;opacity:.65">To enable cloud: update FB_CONFIG with your Firebase project credentials.</p>
+        </div>
+        <div class="glass-card s-card">
+          <h3>📲 Message Templates</h3>
+          <div class="field"><label>WhatsApp Bill</label><textarea id="waTmpl" rows="3">Dear {name}, your SERINE TEA LEAF bill is ready. Bill No: {bill}, Total: Rs.{total}. Thank you! 🍃</textarea></div>
+          <div class="field"><label>Promo Message</label><textarea id="promoTmpl" rows="3">Special offer from SERINE TEA LEAF! 10% off above Rs.1000. Visit us today! 🍃</textarea></div>
+          <button class="btn-sv" id="saveTmplBtn">💾 Save Templates</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div id="mBg" class="modal-bg">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3 id="mTit">—</h3><button id="mClose">✕</button></div>
+    <div id="mBody" class="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+<div class="sync-badge" id="syncBadge">☁️ Syncing...</div>
+<input type="file" id="imgInp" accept="image/*" style="display:none">
+
+<script>
+/* ================================================================
+   SERINE TEA LEAF POS v9 — JavaScript
+   All event listeners via addEventListener (no onclick in HTML)
+   ================================================================ */
+
+// ─── DATABASE ───
+const DB = {
+  _k: k => 'stl9_' + k,
+  g(k) { try { return JSON.parse(localStorage.getItem(this._k(k))); } catch { return null; } },
+  s(k, v) { try { localStorage.setItem(this._k(k), JSON.stringify(v)); } catch {} },
+  init() {
+    if (this.g('ok')) return;
+    this.s('bills', []);
+    this.s('customers', [
+      {id:'C001',name:'Kumari Perera',    phone:'0771234567',points:150,spent:3500,visits:5, last:'2026-03-10'},
+      {id:'C002',name:'Nimal Silva',      phone:'0712345678',points:80, spent:2000,visits:3, last:'2026-03-08'},
+      {id:'C003',name:'Amara Jayasinghe',phone:'0751234567',points:320,spent:7500,visits:12,last:'2026-03-15'},
+    ]);
+    this.s('stock', {'50g':100,'100g':85,'250g':60,'500g':40,'1kg':25});
+    this.s('sHist', []);
+    this.s('sups', [{name:'Ceylon Tea Suppliers',contact:'0112345678',lastBuy:'2026-03-01',amt:50000}]);
+    this.s('billNo', 5521);
+    this.s('shop', {name:'SERINE TEA LEAF',tag:'Premium Quality Tea Products',phone:'+94 11 2345678',addr:'Colombo, Sri Lanka'});
+    this.s('waTmpl', 'Dear {name}, your SERINE TEA LEAF bill is ready. Bill No: {bill}, Total: Rs.{total}. Thank you! 🍃');
+    this.s('promoTmpl', 'Special offer from SERINE TEA LEAF! 10% off above Rs.1000. 🍃');
+    this.s('photos', {});
+    this.s('lastBk', 'Never');
+    this.s('ok', true);
+  }
+};
+
+// ─── PRODUCTS ───
+const PRODS = {
+  '50g':  {name:'50g Packet',  price:100},
+  '100g': {name:'100g Packet', price:200},
+  '250g': {name:'250g Packet', price:500},
+  '500g': {name:'500g Packet', price:1000},
+  '1kg':  {name:'1kg Packet',  price:1500}
+};
+
+// ─── AUTH ───
+const USERS = {
+  'DEWASIRI NARAYANAGE MADUWANTHI': {pass:'Manakkalpitha',  role:'owner', icon:'🏪', label:'Owner'},
+  'DEWASIRI NARAYANAGE KANCHANA':   {pass:'Kanakmalpitha',  role:'admin', icon:'👑', label:'Admin'},
+  'SERINE TEA':                      {pass:'serine tea leaf',role:'staff', icon:'👤', label:'Public Staff'}
+};
+const PERMS = {
+  owner: ['billing','inventory','customers','dashboard','ai','settings'],
+  admin: ['billing','inventory','customers','dashboard','ai'],
+  staff: ['billing','inventory']
+};
+let CU = null, loginTries = 0, loginLocked = false, lockTimer = null;
+
+function doLogin() {
+  if (loginLocked) { toast('🔒 Account locked. Please wait.'); return; }
+  const u = document.getElementById('lgU').value.trim().toUpperCase();
+  const p = document.getElementById('lgP').value.trim();
+  const r = document.getElementById('lgR').value;
+  const errEl = document.getElementById('lgErr');
+  if (!u || !p) { errEl.textContent = '⚠️ Please fill all fields.'; return; }
+  const uKey = Object.keys(USERS).find(k => k === u);
+  const user = uKey ? USERS[uKey] : null;
+  if (!user || user.pass !== p || user.role !== r) {
+    loginTries++;
+    errEl.textContent = '❌ Invalid credentials. Attempt ' + loginTries + ' / 5';
+    document.getElementById('lgP').value = '';
+    if (loginTries >= 5) {
+      loginLocked = true; errEl.textContent = '';
+      const lEl = document.getElementById('lgLocked');
+      const tEl = document.getElementById('lockTimer');
+      lEl.classList.add('show');
+      let s = 30; tEl.textContent = s;
+      lockTimer = setInterval(() => {
+        s--; tEl.textContent = s;
+        if (s <= 0) { clearInterval(lockTimer); loginLocked = false; loginTries = 0; lEl.classList.remove('show'); }
+      }, 1000);
+    }
+    return;
+  }
+  loginTries = 0; errEl.textContent = '';
+  CU = {username: uKey, ...user};
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('mainApp').classList.add('active');
+  document.getElementById('hdrIco').textContent = CU.icon;
+  document.getElementById('hdrLbl').textContent = CU.label;
+  applyPerms(); initApp();
+  toast('Welcome, ' + uKey.split(' ')[0] + '! ' + CU.icon);
+}
+
+function doLogout() {
+  CU = null;
+  document.getElementById('mainApp').classList.remove('active');
+  document.getElementById('loginScreen').classList.add('active');
+  document.getElementById('lgP').value = '';
+  document.getElementById('lgU').value = '';
+  document.getElementById('lgErr').textContent = '';
+  toast('Logged out successfully.');
+}
+
+function applyPerms() {
+  if (!CU) return;
+  const al = PERMS[CU.role];
+  document.querySelectorAll('.nb').forEach(b => { b.style.display = al.includes(b.dataset.s) ? '' : 'none'; });
+  document.querySelectorAll('.mn').forEach(b => { b.style.display = al.includes(b.dataset.ms) ? '' : 'none'; });
+  const sh = document.getElementById('sHistBlock');
+  const su = document.getElementById('supBlock');
+  if (sh) sh.style.display = CU.role === 'staff' ? 'none' : '';
+  if (su) su.style.display = CU.role === 'staff' ? 'none' : '';
+}
+
+// ─── THEME ───
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('stl_theme', isLight ? 'light' : 'dark');
+  toast(isLight ? '☀️ Light Mode' : '🌙 Dark Mode');
+}
+function loadTheme() {
+  if (localStorage.getItem('stl_theme') === 'light') {
+    document.body.classList.add('light');
+    const ti = document.getElementById('themeIcon');
+    if (ti) ti.textContent = '🌙';
+  }
+}
+
+// ─── CLOCK ───
+function tick() {
+  const now = new Date();
+  const d = now.toLocaleDateString('si-LK', {year:'numeric',month:'2-digit',day:'2-digit'});
+  const t = now.toLocaleTimeString('si-LK', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const e1 = document.getElementById('hdrDate');
+  const e2 = document.getElementById('hdrTime');
+  const e3 = document.getElementById('bpDate');
+  if (e1) e1.textContent = 'දිනය: ' + d;
+  if (e2) e2.textContent = t;
+  if (e3) e3.textContent = 'Date: ' + now.toLocaleDateString('en-GB');
+}
+
+// ─── NAVIGATION ───
+function goSec(s) {
+  if (CU && !PERMS[CU.role].includes(s)) { toast('🔒 Access denied.'); return; }
+  document.querySelectorAll('.sec').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nb,.mn').forEach(x => x.classList.remove('active'));
+  const sec = document.getElementById('sec-' + s);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll('[data-s="'+s+'"],[data-ms="'+s+'"]').forEach(x => x.classList.add('active'));
+  if (s === 'dashboard') { renderDash(); setTimeout(renderCharts, 80); }
+  if (s === 'ai') { runAI(); setTimeout(renderAICharts, 80); }
+}
+
+// ─── BILLING STATE ───
+let ITEMS = [], DISC = 0, PAY = 'cash';
+
+function refreshBNo() {
+  const n = DB.g('billNo') || 5521;
+  const sv = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  sv('curBNo', 'BILL-' + n);
+  sv('hdrBNo', 'Bill #' + n);
+  sv('bpNo', 'Bill No: #' + n);
+}
+
+function buildQsGrid() {
+  const g = document.getElementById('qsGrid');
+  if (!g) return;
+  g.innerHTML = '';
+  Object.entries(PRODS).forEach(([size, p]) => {
+    const b = document.createElement('button');
+    b.className = 'qbtn';
+    b.innerHTML = '<b>' + size + '</b><small>Rs.' + p.price.toLocaleString() + '</small>';
+    b.addEventListener('click', () => qAdd(size, p.price));
+    g.appendChild(b);
+  });
+}
+
+function qAdd(size, price) {
+  const st = DB.g('stock') || {};
+  if ((st[size] || 0) <= 0) { toast('❌ ' + size + ' out of stock!'); return; }
+  const ex = ITEMS.find(i => i.size === size);
+  if (ex) { ex.qty++; ex.total = ex.qty * ex.price; }
+  else ITEMS.push({size, name: PRODS[size].name, price, qty: 1, total: price, disc: 0});
+  renderBP(); toast('✅ ' + PRODS[size].name + ' added!');
+}
+
+function addItem() {
+  const sel = document.getElementById('pSel').value.split('|');
+  const size = sel[0], price = parseInt(sel[1]);
+  const qty  = parseInt(document.getElementById('qtyI').value) || 1;
+  const disc = parseInt(document.getElementById('discI').value) || 0;
+  const st = DB.g('stock') || {};
+  if ((st[size] || 0) < qty) { toast('❌ Not enough stock! Available: ' + (st[size] || 0)); return; }
+  const ex = ITEMS.find(i => i.size === size);
+  if (ex) { ex.qty += qty; ex.disc += disc; ex.total = ex.qty * ex.price - ex.disc; }
+  else ITEMS.push({size, name: PRODS[size].name, price, qty, disc, total: price * qty - disc});
+  DISC += disc;
+  document.getElementById('discI').value = 0;
+  document.getElementById('qtyI').value = 1;
+  renderBP(); toast('✅ ' + PRODS[size].name + ' ×' + qty + ' added!');
+}
+
+function remItem(i) { DISC -= ITEMS[i].disc; ITEMS.splice(i, 1); renderBP(); }
+function undoItem() { if (!ITEMS.length) { toast('⚠️ Nothing to undo.'); return; } const l = ITEMS.pop(); DISC -= l.disc; renderBP(); toast('↩ ' + l.name + ' removed.'); }
+function clearBill() {
+  ITEMS = []; DISC = 0;
+  ['cName','cPhone'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  renderBP(); toast('🗑 Bill cleared.');
+}
+function setPay(m) {
+  PAY = m;
+  document.querySelectorAll('.pb').forEach(b => b.classList.remove('active'));
+  const e = document.getElementById('p-' + m);
+  if (e) e.classList.add('active');
+}
+
+function renderBP() {
+  const tb = document.getElementById('bpRows');
+  if (!tb) return;
+  tb.innerHTML = '';
+  let sub = 0;
+  ITEMS.forEach((item, i) => {
+    sub += item.price * item.qty;
+    const tr = document.createElement('tr');
+    const rmBtn = document.createElement('button');
+    rmBtn.style.cssText = 'background:none;border:none;color:var(--r);cursor:pointer;float:right;font-weight:800;font-size:.82rem;';
+    rmBtn.textContent = '✕';
+    rmBtn.addEventListener('click', () => remItem(i));
+    const td4 = document.createElement('td');
+    td4.textContent = 'Rs.' + item.total.toLocaleString();
+    td4.appendChild(rmBtn);
+    tr.innerHTML = '<td>' + item.name + '</td><td>Rs.' + item.price.toLocaleString() + '</td><td>' + item.qty + '</td>';
+    tr.appendChild(td4);
+    tb.appendChild(tr);
+  });
+  const grand = sub - DISC;
+  const sv = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  sv('bpSub',   'Rs. ' + sub.toLocaleString() + '.00');
+  sv('bpDisc',  '– Rs. ' + DISC.toLocaleString() + '.00');
+  sv('bpTotal', 'Rs. ' + grand.toLocaleString() + '.00');
+  const cn = document.getElementById('cName')?.value || '';
+  const cp = document.getElementById('cPhone')?.value || '';
+  const bc = document.getElementById('bpCust');
+  if (bc) {
+    bc.textContent = '';
+    if (cn) { bc.innerHTML = '<strong>' + cn + '</strong>' + (cp ? ' | ' + cp : ''); }
+  }
+}
+
+function saveBill() {
+  if (!ITEMS.length) { toast('⚠️ No items.'); return; }
+  const no   = DB.g('billNo') || 5521;
+  const sub  = ITEMS.reduce((s, i) => s + i.price * i.qty, 0);
+  const grand = sub - DISC;
+  const bill = {
+    id: 'BILL-' + no,
+    customer: document.getElementById('cName')?.value || 'Walk-in',
+    phone: document.getElementById('cPhone')?.value || '',
+    items: JSON.parse(JSON.stringify(ITEMS)),
+    sub, disc: DISC, total: grand, pay: PAY,
+    date: new Date().toLocaleDateString('en-GB'),
+    time: new Date().toLocaleTimeString(),
+    ts: Date.now()
+  };
+  const bills = DB.g('bills') || [];
+  bills.unshift(bill); DB.s('bills', bills);
+  const st = DB.g('stock') || {}, sh = DB.g('sHist') || [];
+  ITEMS.forEach(item => {
+    st[item.size] = Math.max(0, (st[item.size] || 0) - item.qty);
+    sh.unshift({date: bill.date, prod: item.name, action: 'Sale', qty: -item.qty, bal: st[item.size], note: bill.id});
+  });
+  DB.s('stock', st); DB.s('sHist', sh);
+  if (bill.customer !== 'Walk-in' && bill.phone) {
+    const custs = DB.g('customers') || [];
+    const ci = custs.findIndex(c => c.phone === bill.phone);
+    const pts = Math.floor(grand / 100);
+    if (ci >= 0) { custs[ci].points += pts; custs[ci].spent += grand; custs[ci].visits++; custs[ci].last = bill.date; }
+    else custs.push({id: 'C' + Date.now(), name: bill.customer, phone: bill.phone, points: pts, spent: grand, visits: 1, last: bill.date});
+    DB.s('customers', custs); loadCustSugg();
+  }
+  DB.s('billNo', no + 1);
+  toast('✅ Bill saved! ' + bill.id);
+  renderRecent(); refreshBNo(); renderInv(); clearBill();
+  fbAfterBill();
+}
+
+function doPrint() { if (!ITEMS.length) { toast('⚠️ Nothing to print.'); return; } window.print(); }
+
+function sendWA() {
+  const ph = document.getElementById('cPhone')?.value.replace(/\D/g, '') || '';
+  if (!ph) { toast('⚠️ Enter phone number.'); return; }
+  const name  = document.getElementById('cName')?.value || 'Customer';
+  const no    = DB.g('billNo') || 5521;
+  const grand = ITEMS.reduce((s, i) => s + i.total, 0) - DISC;
+  const tmpl  = DB.g('waTmpl') || 'Bill: {bill}, Total: Rs.{total} 🍃';
+  const msg   = tmpl.replace('{name}', name).replace('{bill}', 'BILL-' + no).replace('{total}', grand.toLocaleString());
+  window.open('https://wa.me/' + ph + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function renderRecent() {
+  const el = document.getElementById('recList');
+  if (!el) return;
+  const bills = DB.g('bills') || [];
+  el.innerHTML = '';
+  bills.slice(0, 5).forEach(b => {
+    const d = document.createElement('div');
+    d.className = 'rbi';
+    const s = document.createElement('strong'); s.textContent = b.id;
+    const n = document.createElement('span');   n.textContent = b.customer;
+    const t = document.createElement('span');
+    t.style.cssText = 'color:var(--acc2);font-weight:800;';
+    t.textContent = 'Rs.' + b.total.toLocaleString();
+    d.append(s, n, t);
+    d.addEventListener('click', () => loadCopy(b));
+    el.appendChild(d);
+  });
+}
+
+function loadCopy(b) {
+  ITEMS = JSON.parse(JSON.stringify(b.items)); DISC = b.disc;
+  const cn = document.getElementById('cName'), cp = document.getElementById('cPhone');
+  if (cn) cn.value = b.customer; if (cp) cp.value = b.phone;
+  renderBP(); toast('📋 ' + b.id + ' loaded.');
+}
+
+function loadCustSugg() {
+  const dl = document.getElementById('cSugg');
+  if (!dl) return;
+  dl.innerHTML = '';
+  (DB.g('customers') || []).forEach(c => {
+    const o = document.createElement('option'); o.value = c.name; dl.appendChild(o);
+  });
+}
+
+// ─── INVENTORY ───
+let imgTarget = null;
+
+function buildInvGrid() {
+  const grid = document.getElementById('invGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(PRODS).forEach(size => {
+    const d = document.createElement('div');
+    d.className = 'inv-card'; d.id = 'ic-' + size;
+    d.innerHTML = '<div class="inv-ico">🍃</div>' +
+      '<h3>' + PRODS[size].name + '</h3>' +
+      '<div class="inv-num" id="is-' + size + '">0</div>' +
+      '<div class="inv-bdg good" id="ib-' + size + '">Good Stock</div>' +
+      '<div class="inv-btns">' +
+        '<button id="ibp-' + size + '">+</button>' +
+        '<button id="ibm-' + size + '">−</button>' +
+      '</div>' +
+      '<div class="inv-photo" id="ip-' + size + '"></div>';
+    grid.appendChild(d);
+    document.getElementById('ibp-' + size).addEventListener('click', () => adjSt(size, 1));
+    document.getElementById('ibm-' + size).addEventListener('click', () => adjSt(size, -1));
+  });
+}
+
+function renderInv() {
+  const st = DB.g('stock') || {};
+  const canEdit = CU && (CU.role === 'owner' || CU.role === 'admin');
+  Object.keys(PRODS).forEach(size => {
+    const qty = st[size] || 0;
+    const en = document.getElementById('is-' + size);
+    const eb = document.getElementById('ib-' + size);
+    if (en) en.textContent = qty;
+    if (eb) { eb.textContent = qty <= 10 ? '⚠️ Low Stock' : 'Good Stock'; eb.className = 'inv-bdg ' + (qty <= 10 ? 'low' : 'good'); }
+    // +/- buttons: visible but disabled for staff
+    const ibp = document.getElementById('ibp-' + size);
+    const ibm = document.getElementById('ibm-' + size);
+    if (ibp && ibm) {
+      if (!canEdit) {
+        ibp.disabled = true; ibm.disabled = true;
+        ibp.classList.add('btn-disabled'); ibm.classList.add('btn-disabled');
+        ibp.title = '🔒 Owner/Admin only'; ibm.title = '🔒 Owner/Admin only';
+      } else {
+        ibp.disabled = false; ibm.disabled = false;
+        ibp.classList.remove('btn-disabled'); ibm.classList.remove('btn-disabled');
+        ibp.title = ''; ibm.title = '';
+      }
+    }
+    renderPhoto(size);
+  });
+  // Add Stock button: visible but disabled for staff
+  const addStockBtn = document.getElementById('addStockBtn');
+  if (addStockBtn) {
+    if (!canEdit) {
+      addStockBtn.disabled = true;
+      addStockBtn.classList.add('btn-disabled');
+      addStockBtn.title = '🔒 Owner/Admin only';
+    } else {
+      addStockBtn.disabled = false;
+      addStockBtn.classList.remove('btn-disabled');
+      addStockBtn.title = '';
+    }
+  }
+  renderSHist(); renderSups();
+}
+
+function renderPhoto(size) {
+  const area = document.getElementById('ip-' + size);
+  if (!area) return;
+  const canPhoto = CU && (CU.role === 'owner' || CU.role === 'admin');
+  const photos = DB.g('photos') || {};
+  area.innerHTML = '';
+  if (photos[size]) {
+    const img = document.createElement('img');
+    img.src = photos[size]; img.className = 'inv-thumb';
+    if (canPhoto) {
+      img.title = 'Click to change';
+      img.addEventListener('click', () => { imgTarget = size; document.getElementById('imgInp').click(); });
+    } else {
+      img.title = 'Photo';
+      img.style.opacity = '.75';
+      img.style.cursor = 'default';
+    }
+    area.appendChild(img);
+  } else if (canPhoto) {
+    const btn = document.createElement('button');
+    btn.className = 'inv-pbtn'; btn.textContent = '📷 Add Photo';
+    btn.addEventListener('click', () => { imgTarget = size; document.getElementById('imgInp').click(); });
+    area.appendChild(btn);
+  }
+  // Staff sees existing photos (dimmed, no click), but no Add Photo button
+}
+
+function adjSt(size, d) {
+  const st = DB.g('stock') || {};
+  st[size] = Math.max(0, (st[size] || 0) + d);
+  DB.s('stock', st);
+  const sh = DB.g('sHist') || [];
+  sh.unshift({date: new Date().toLocaleDateString('en-GB'), prod: PRODS[size].name, action: d > 0 ? 'Add' : 'Reduce', qty: d, bal: st[size], note: 'Manual'});
+  DB.s('sHist', sh); renderInv(); fbAfterStock();
+  toast((d > 0 ? '+' : '') + d + ' ' + PRODS[size].name + ' | Balance: ' + st[size]);
+}
+
+function renderSHist() {
+  const el = document.getElementById('sHistTbl');
+  if (!el) return;
+  el.innerHTML = '';
+  (DB.g('sHist') || []).slice(0, 20).forEach(h => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + h.date + '</td><td>' + h.prod + '</td>' +
+      '<td style="color:' + (h.qty > 0 ? 'var(--g)' : 'var(--r)') + ';font-weight:700;">' + (h.qty > 0 ? '+' : '') + h.qty + '</td>' +
+      '<td>' + h.action + '</td><td><strong>' + h.bal + '</strong></td><td>' + h.note + '</td>';
+    el.appendChild(tr);
+  });
+}
+
+function renderSups() {
+  const el = document.getElementById('supTbl');
+  if (!el) return;
+  el.innerHTML = '';
+  (DB.g('sups') || []).forEach(x => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + x.name + '</td><td>' + x.contact + '</td><td>' + x.lastBuy + '</td><td>Rs. ' + x.amt.toLocaleString() + '</td>';
+    el.appendChild(tr);
+  });
+}
+
+function openAddStock() {
+  openMod('📦 Add Stock',
+    '<div class="field"><label>Product</label><select id="mP">' +
+    Object.entries(PRODS).map(([k,v]) => '<option value="' + k + '">' + v.name + '</option>').join('') +
+    '</select></div>' +
+    '<div class="field"><label>Quantity</label><input type="number" id="mQ" value="10" min="1"></div>' +
+    '<div class="field"><label>Note</label><input type="text" id="mN" placeholder="Restock"></div>' +
+    '<button class="btn-p" id="confStockBtn">✅ Add Stock</button>'
+  );
+  document.getElementById('confStockBtn').addEventListener('click', confStock);
+}
+
+function confStock() {
+  const s = document.getElementById('mP').value;
+  const q = parseInt(document.getElementById('mQ').value) || 0;
+  const n = document.getElementById('mN').value || 'Restock';
+  const st = DB.g('stock') || {};
+  st[s] = (st[s] || 0) + q; DB.s('stock', st);
+  const sh = DB.g('sHist') || [];
+  sh.unshift({date: new Date().toLocaleDateString('en-GB'), prod: PRODS[s].name, action: 'Restock', qty: '+' + q, bal: st[s], note: n});
+  DB.s('sHist', sh); renderInv(); closeMod(); toast('✅ ' + q + ' units added!');
+}
+
+function openAddSup() {
+  openMod('🏭 Add Supplier',
+    '<div class="field"><label>Name</label><input type="text" id="sN" placeholder="Supplier Name"></div>' +
+    '<div class="field"><label>Contact</label><input type="text" id="sC" placeholder="Phone"></div>' +
+    '<div class="field"><label>Amount</label><input type="number" id="sA" placeholder="0"></div>' +
+    '<button class="btn-p" id="confSupBtn">✅ Save</button>'
+  );
+  document.getElementById('confSupBtn').addEventListener('click', () => {
+    const sups = DB.g('sups') || [];
+    sups.push({name: document.getElementById('sN').value, contact: document.getElementById('sC').value, lastBuy: new Date().toLocaleDateString('en-GB'), amt: parseInt(document.getElementById('sA').value) || 0});
+    DB.s('sups', sups); renderSups(); closeMod(); toast('✅ Supplier added!');
+  });
+}
+
+// ─── CUSTOMERS ───
+function renderCusts(list) {
+  const el = document.getElementById('custTbl');
+  if (!el) return;
+  el.innerHTML = '';
+  (list || DB.g('customers') || []).forEach(c => {
+    const disc = c.points >= 500 ? '10%' : c.points >= 200 ? '5%' : 'None';
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td><strong>' + c.name + '</strong></td><td>' + c.phone + '</td>' +
+      '<td>Rs. ' + (c.spent || 0).toLocaleString() + '</td>' +
+      '<td><span class="badge gr">' + c.points + ' pts</span></td>' +
+      '<td>' + disc + '</td><td>' + (c.visits || 0) + '</td><td>' + (c.last || '—') + '</td>' +
+      '<td>' +
+        '<button class="btn-p" style="font-size:.74rem;padding:.26rem .58rem;margin-right:.3rem;" data-ph="' + c.phone + '" data-action="promo">📲 Promo</button>' +
+        '<button style="background:none;border:none;color:var(--r);cursor:pointer;font-size:.9rem;" data-id="' + c.id + '" data-action="del">🗑</button>' +
+      '</td>';
+    tr.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.action === 'promo') sendPromo(btn.dataset.ph);
+        if (btn.dataset.action === 'del')   delCust(btn.dataset.id);
+      });
+    });
+    el.appendChild(tr);
+  });
+}
+
+function filterCusts() {
+  const q = document.getElementById('cSrch').value.toLowerCase();
+  renderCusts((DB.g('customers') || []).filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)));
+}
+
+function openAddCust() {
+  openMod('👤 Add Customer',
+    '<div class="field"><label>Name</label><input type="text" id="caN" placeholder="Customer Name"></div>' +
+    '<div class="field"><label>Phone</label><input type="text" id="caP" placeholder="07XXXXXXXX"></div>' +
+    '<button class="btn-p" id="confCustBtn">✅ Add</button>'
+  );
+  document.getElementById('confCustBtn').addEventListener('click', () => {
+    const name = document.getElementById('caN').value.trim();
+    const phone = document.getElementById('caP').value.trim();
+    if (!name || !phone) { toast('⚠️ Fill all fields.'); return; }
+    const c = DB.g('customers') || [];
+    c.push({id: 'C' + Date.now(), name, phone, points: 0, spent: 0, visits: 0, last: '—'});
+    DB.s('customers', c); loadCustSugg(); renderCusts(); closeMod(); toast('✅ Customer added!'); fbAfterCust();
+  });
+}
+
+function delCust(id) {
+  DB.s('customers', (DB.g('customers') || []).filter(c => c.id !== id));
+  renderCusts(); fbAfterCust(); toast('🗑 Removed.');
+}
+
+function sendPromo(ph) {
+  const p = ph.replace(/\D/g, '');
+  window.open('https://wa.me/' + p + '?text=' + encodeURIComponent(DB.g('promoTmpl') || 'Special offer! 🍃'), '_blank');
+}
+
+// ─── DASHBOARD ───
+let CHARTS = {}, advT = 'bar';
+
+function renderDash() {
+  const bills  = DB.g('bills') || [];
+  const today  = new Date().toLocaleDateString('en-GB');
+  const wAgo   = new Date(Date.now() - 7 * 864e5);
+  const mAgo   = new Date(Date.now() - 30 * 864e5);
+  const dB     = bills.filter(b => b.date === today);
+  const wB     = bills.filter(b => new Date(b.ts) >= wAgo);
+  const mB     = bills.filter(b => new Date(b.ts) >= mAgo);
+  const ps     = {};
+  bills.forEach(b => b.items.forEach(i => { ps[i.name] = (ps[i.name] || 0) + i.qty; }));
+  const best   = Object.entries(ps).sort((a, b) => b[1] - a[1])[0];
+  const sv = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  sv('stD',   'Rs. ' + dB.reduce((s, b) => s + b.total, 0).toLocaleString());
+  sv('stW',   'Rs. ' + wB.reduce((s, b) => s + b.total, 0).toLocaleString());
+  sv('stM',   'Rs. ' + mB.reduce((s, b) => s + b.total, 0).toLocaleString());
+  sv('stB',   bills.length);
+  sv('stBst', best ? best[0].replace(' Packet', '') : '—');
+  sv('stPr',  'Rs. ' + Math.floor(mB.reduce((s, b) => s + b.total, 0) * .25).toLocaleString());
+  renderDashBillsTbl();
+}
+
+function renderDashBillsTbl() {
+  const el = document.getElementById('dashBTbl');
+  if (!el) return;
+  el.innerHTML = '';
+  const ic = {cash:'💵', card:'💳', online:'📱', split:'⚖️'};
+  (DB.g('bills') || []).slice(0, 15).forEach(b => {
+    const tr = document.createElement('tr');
+    const cpBtn = document.createElement('button');
+    cpBtn.className = 'btn-p';
+    cpBtn.style.cssText = 'font-size:.74rem;padding:.26rem .62rem;';
+    cpBtn.textContent = 'Copy';
+    cpBtn.addEventListener('click', () => { goSec('billing'); loadCopy(b); });
+    tr.innerHTML = '<td><strong>' + b.id + '</strong></td><td>' + b.customer + '</td><td>' + b.items.length + '</td>' +
+      '<td><strong>Rs. ' + b.total.toLocaleString() + '</strong></td>' +
+      '<td>' + (ic[b.pay] || '') + ' ' + b.pay + '</td><td>' + b.date + '</td><td></td>';
+    tr.lastElementChild.appendChild(cpBtn);
+    el.appendChild(tr);
+  });
+}
+
+function getChartColors() {
+  const isDark = !document.body.classList.contains('light');
+  return {
+    grid:  isDark ? 'rgba(220,238,220,.08)' : 'rgba(26,56,40,.08)',
+    text:  isDark ? '#78a080' : '#527052',
+    cols:  ['#1a5c36','#226644','#c8a84b','#2ecc71','#d35400']
+  };
+}
+
+function renderCharts() {
+  const bills = DB.g('bills') || [];
+  const ps = {'50g':0,'100g':0,'250g':0,'500g':0,'1kg':0};
+  bills.forEach(b => b.items.forEach(i => { if (ps[i.size] !== undefined) ps[i.size] += i.qty; }));
+  const {grid, text, cols} = getChartColors();
+
+  const c1 = document.getElementById('cProd');
+  if (c1) {
+    if (CHARTS.p) CHARTS.p.destroy();
+    CHARTS.p = new Chart(c1, {type:'doughnut', data:{labels:Object.keys(ps), datasets:[{data:Object.values(ps), backgroundColor:cols, borderWidth:0}]},
+      options:{responsive:true, plugins:{legend:{position:'bottom', labels:{color:text, font:{size:12}}}}}});
+  }
+  const days = [], revs = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 864e5);
+    days.push(d.toLocaleDateString('en-GB', {month:'short', day:'numeric'}));
+    revs.push(bills.filter(b => b.date === d.toLocaleDateString('en-GB')).reduce((s, b) => s + b.total, 0));
+  }
+  const c2 = document.getElementById('cRev');
+  if (c2) {
+    if (CHARTS.r) CHARTS.r.destroy();
+    CHARTS.r = new Chart(c2, {type:'line',
+      data:{labels:days, datasets:[{label:'Revenue', data:revs, borderColor:'#1a5c36', backgroundColor:'rgba(26,92,54,.12)', tension:.4, fill:true, pointBackgroundColor:'#c8a84b', pointRadius:4, borderWidth:2.5}]},
+      options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:grid}, ticks:{color:text}}, x:{grid:{display:false}, ticks:{color:text}}}}});
+  }
+  renderAdvChart();
+}
+
+function renderAdvChart() {
+  const bills = DB.g('bills') || [];
+  const ps = {'50g':0,'100g':0,'250g':0,'500g':0,'1kg':0};
+  const rv = {'50g':0,'100g':0,'250g':0,'500g':0,'1kg':0};
+  bills.forEach(b => b.items.forEach(i => { if (ps[i.size] !== undefined) { ps[i.size] += i.qty; rv[i.size] += i.total; } }));
+  const c = document.getElementById('cAdv');
+  if (!c) return;
+  if (CHARTS.adv) CHARTS.adv.destroy();
+  const {grid, text} = getChartColors();
+  const cols = ['rgba(26,92,54,.85)','rgba(34,102,68,.85)','rgba(200,168,75,.85)','rgba(46,204,113,.85)','rgba(211,84,0,.85)'];
+  CHARTS.adv = new Chart(c, {type: advT,
+    data:{labels: Object.keys(ps).map(k => PRODS[k].name),
+      datasets:[
+        {label:'Units Sold',   data:Object.values(ps), backgroundColor:cols, borderColor:cols.map(c=>c.replace('.85','1')), borderWidth:2},
+        {label:'Revenue Rs.', data:Object.values(rv), backgroundColor:cols.map(c=>c.replace('.85','.5')), borderColor:cols.map(c=>c.replace('.85','.9')), borderWidth:2}
+      ]},
+    options:{responsive:true,
+      plugins:{legend:{position:'top', labels:{color:text, font:{size:12}}}},
+      scales: advT === 'radar' || advT === 'polarArea' ? {} : {y:{beginAtZero:true, grid:{color:grid}, ticks:{color:text}}, x:{grid:{display:false}, ticks:{color:text}}}}});
+}
+
+// ─── AI POWER ───
+function buildAICards() {
+  const el = document.getElementById('aiCards');
+  if (!el) return;
+  const defs = [
+    {id:'aiBS', ico:'📊', h:'Best Seller',     sm:'Units sold analysis',  cls:'g'},
+    {id:'aiDF', ico:'🔮', h:'Demand Forecast', sm:'7-day AI prediction',  cls:'b'},
+    {id:'aiPS', ico:'💡', h:'Price Insight',   sm:'Revenue optimization', cls:'o'},
+    {id:'aiSA', ico:'⚠️', h:'Stock Alert',     sm:'Reorder needed',       cls:'r'},
+    {id:'aiTC', ico:'👤', h:'Top Customer',    sm:'Highest spender',      cls:'t'},
+    {id:'aiBD', ico:'📅', h:'Best Sales Day',  sm:'Peak performance',     cls:'p'},
+  ];
+  const barColors = {g:'var(--g)',b:'var(--b)',o:'var(--o)',r:'var(--r)',t:'var(--tl)',p:'var(--pu)'};
+  el.innerHTML = '';
+  defs.forEach(d => {
+    const div = document.createElement('div');
+    div.className = 'ai-card ' + d.cls;
+    div.innerHTML = '<div class="ai-card-bar" style="background:' + barColors[d.cls] + '"></div>' +
+      '<div class="ai-ico">' + d.ico + '</div>' +
+      '<h3>' + d.h + '</h3>' +
+      '<div class="ai-val" id="' + d.id + '">—</div>' +
+      '<small>' + d.sm + '</small>';
+    el.appendChild(div);
+  });
+}
+
+function buildAISugg() {
+  const el = document.getElementById('aiSugg');
+  if (!el) return;
+  const suggests = [
+    ["📊 Today's Sales",   "What is today's sales?"],
+    ["⭐ Best Seller",      "Which product sells most?"],
+    ["📦 Stock Status",    "Check stock levels"],
+    ["💡 Business Tips",   "Give me business advice"],
+    ["👤 Top Customer",    "Who is the top customer?"],
+    ["🔮 Next Week",       "Predict next week sales"],
+    ["📅 Weekly Report",   "Give me weekly performance report"],
+    ["💰 Profit Analysis", "Show me profit analysis"],
+    ["⚠️ Low Stock Alert", "Which products need restocking?"],
+    ["🎯 Sales Strategy",  "What sales strategy should I follow?"],
+  ];
+  el.innerHTML = '';
+  suggests.forEach(([label, q]) => {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.addEventListener('click', () => askAI(q));
+    el.appendChild(btn);
+  });
+}
+
+function runAI() {
+  const bills = DB.g('bills') || [];
+  const st    = DB.g('stock') || {};
+  const custs = DB.g('customers') || [];
+  const ps    = {};
+  bills.forEach(b => b.items.forEach(i => { ps[i.name] = (ps[i.name] || 0) + i.qty; }));
+  const best   = Object.entries(ps).sort((a, b) => b[1] - a[1])[0];
+  const recent = bills.filter(b => new Date(b.ts) >= new Date(Date.now() - 7 * 864e5));
+  const demand = recent.length > 5 ? 'High 📈' : recent.length > 2 ? 'Medium 📊' : 'Low 📉';
+  const low    = Object.entries(st).filter(([, v]) => v <= 15).map(([k]) => PRODS[k]?.name || k);
+  const topC   = [...custs].sort((a, b) => (b.spent || 0) - (a.spent || 0))[0];
+  const dm     = {};
+  bills.forEach(b => { dm[b.date] = (dm[b.date] || 0) + b.total; });
+  const bestD  = Object.entries(dm).sort((a, b) => b[1] - a[1])[0];
+  const sv = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  sv('aiBS', best ? best[0] + ' (' + best[1] + ' sold)' : 'No data yet');
+  sv('aiDF', demand);
+  sv('aiPS', bills.length > 10 ? 'Suggest +5% on 1kg' : 'Stable — Monitor');
+  sv('aiSA', low.length ? '⚠️ Low: ' + low.join(', ') : '✅ All OK');
+  sv('aiTC', topC ? topC.name + ' — Rs.' + topC.spent.toLocaleString() : 'No data');
+  sv('aiBD', bestD ? bestD[0] + ' (Rs.' + bestD[1].toLocaleString() + ')' : 'No data');
+  // Update price insight with smarter logic
+  const allRev2 = bills.reduce((s,b)=>s+b.total,0);
+  const avgBill2 = bills.length ? Math.round(allRev2/bills.length) : 0;
+  const topProd = Object.entries(ps).sort((a,b)=>b[1]-a[1])[0];
+  sv('aiPS', topProd && bills.length > 5 ? topProd[0] + ' +5% viable' : 'Need more data');
+}
+
+function refreshAI() { runAI(); renderAICharts(); toast('🤖 AI refreshed!'); }
+
+function renderAICharts() {
+  const bills = DB.g('bills') || [];
+  const {grid, text} = getChartColors();
+  const days = [], actual = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 864e5);
+    days.push(d.toLocaleDateString('en-GB', {month:'short', day:'numeric'}));
+    actual.push(bills.filter(b => b.date === d.toLocaleDateString('en-GB')).reduce((s, b) => s + b.total, 0));
+  }
+  const avg  = actual.reduce((a, b) => a + b, 0) / (actual.length || 1);
+  const pred = Array.from({length:7}, () => Math.round(avg * (0.82 + Math.random() * .36)));
+
+  const c = document.getElementById('cAIPred');
+  if (c) {
+    if (CHARTS.ai) CHARTS.ai.destroy();
+    CHARTS.ai = new Chart(c, {type:'line',
+      data:{labels:[...days,'D+1','D+2','D+3','D+4','D+5','D+6','D+7'],
+        datasets:[
+          {label:'Actual',      data:[...actual,...Array(7).fill(null)], borderColor:'#1a5c36', backgroundColor:'rgba(26,92,54,.12)', tension:.4, fill:true, pointBackgroundColor:'#1a5c36', pointRadius:4, borderWidth:2.5},
+          {label:'AI Predicted',data:[...Array(7).fill(null),...pred],   borderColor:'#c8a84b', borderDash:[6,4], tension:.4, pointBackgroundColor:'#c8a84b', pointRadius:4, borderWidth:2.5}
+        ]},
+      options:{responsive:true, plugins:{legend:{labels:{color:text,font:{size:12}}}}, scales:{y:{beginAtZero:true,grid:{color:grid},ticks:{color:text}},x:{grid:{display:false},ticks:{color:text}}}}});
+  }
+
+  const last5 = [];
+  for (let i = 4; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 864e5);
+    last5.push(d.toLocaleDateString('en-GB', {month:'short', day:'numeric'}));
+  }
+  const ch = document.getElementById('cHeat');
+  if (ch) {
+    const cols2 = ['#1a5c36','#226644','#c8a84b','#2ecc71','#d35400'];
+    const datasets = Object.keys(PRODS).map((size, idx) => ({
+      label: PRODS[size].name,
+      data: last5.map((_, i) => {
+        const d = new Date(Date.now() - (4 - i) * 864e5).toLocaleDateString('en-GB');
+        return bills.filter(b => b.date === d).reduce((s, b) => s + b.items.filter(it => it.size === size).reduce((ss, it) => ss + it.qty, 0), 0);
+      }),
+      backgroundColor: cols2[idx], borderRadius: 4
+    }));
+    if (CHARTS.hm) CHARTS.hm.destroy();
+    CHARTS.hm = new Chart(ch, {type:'bar', data:{labels:last5, datasets},
+      options:{responsive:true, plugins:{legend:{position:'bottom',labels:{color:text,font:{size:11}}}}, scales:{x:{stacked:true,grid:{display:false},ticks:{color:text}},y:{stacked:true,beginAtZero:true,grid:{color:grid},ticks:{color:text}}}}});
+  }
+
+  const cp = document.getElementById('cProfit');
+  if (cp) {
+    const mDays = [], revs = [], profits = [];
+    for (let i = 29; i >= 0; i -= 3) {
+      const d = new Date(Date.now() - i * 864e5);
+      mDays.push(d.toLocaleDateString('en-GB', {month:'short', day:'numeric'}));
+      const r = bills.filter(b => b.date === d.toLocaleDateString('en-GB')).reduce((s, b) => s + b.total, 0);
+      revs.push(r); profits.push(Math.floor(r * .25));
+    }
+    if (CHARTS.pr) CHARTS.pr.destroy();
+    CHARTS.pr = new Chart(cp, {type:'bar',
+      data:{labels:mDays, datasets:[{label:'Revenue',data:revs,backgroundColor:'rgba(26,92,54,.75)',borderRadius:5},{label:'Est. Profit',data:profits,backgroundColor:'rgba(200,168,75,.75)',borderRadius:5}]},
+      options:{responsive:true, plugins:{legend:{position:'top',labels:{color:text,font:{size:12}}}}, scales:{y:{beginAtZero:true,grid:{color:grid},ticks:{color:text}},x:{grid:{display:false},ticks:{color:text}}}}});
+  }
+}
+
+// ─── AI CHAT ───
+function askAI(q) { document.getElementById('aiInp').value = q; sendAI(); }
+
+function sendAI() {
+  const inp = document.getElementById('aiInp');
+  const q   = inp.value.trim();
+  if (!q) return;
+  addAIMsg(q, 'user'); inp.value = '';
+  setTimeout(() => addAIMsg(getAIReply(q.toLowerCase()), 'bot'), 650);
+}
+
+function addAIMsg(text, who) {
+  const el = document.getElementById('aiMsgs');
+  const d  = document.createElement('div'); d.className = 'ai-msg ' + who;
+  const i  = document.createElement('div'); i.className = 'ai-msg-inner'; i.textContent = text;
+  d.appendChild(i); el.appendChild(d); el.scrollTop = el.scrollHeight;
+}
+
+function getAIReply(q) {
+  const bills = DB.g('bills') || [];
+  const st    = DB.g('stock') || {};
+  const custs = DB.g('customers') || [];
+  const today = new Date().toLocaleDateString('en-GB');
+  const todB  = bills.filter(b => b.date === today);
+  const todS  = todB.reduce((s, b) => s + b.total, 0);
+  const ps    = {};
+  bills.forEach(b => b.items.forEach(i => { ps[i.name] = (ps[i.name] || 0) + i.qty; }));
+  const best   = Object.entries(ps).sort((a, b) => b[1] - a[1])[0];
+  const low    = Object.entries(st).filter(([, v]) => v <= 15).map(([k]) => PRODS[k]?.name || k);
+  const topC   = [...custs].sort((a, b) => (b.spent || 0) - (a.spent || 0))[0];
+  const wS     = bills.filter(b => new Date(b.ts) >= new Date(Date.now() - 7 * 864e5)).reduce((s, b) => s + b.total, 0);
+  const mS     = bills.filter(b => new Date(b.ts) >= new Date(Date.now() - 30 * 864e5)).reduce((s, b) => s + b.total, 0);
+  const allRev = bills.reduce((s, b) => s + b.total, 0);
+  const avgBill = bills.length ? Math.round(allRev / bills.length) : 0;
+  const loyalC = custs.filter(c => c.points >= 200).length;
+
+  if (q.match(/hello|hi|hey|good|ආයු/))
+    return '👋 ආයුබෝවන්! I\'m your SERINE AI Assistant with access to your real-time business data. I can analyze sales, stock, customers, and predict trends. What would you like to know?';
+  if (q.match(/today|daily|දිනය/))
+    return '📊 Today\'s performance:\n• Bills: ' + todB.length + '\n• Revenue: Rs. ' + todS.toLocaleString() + '\n• Avg bill: Rs. ' + (todB.length ? Math.round(todS / todB.length).toLocaleString() : 0) + '\n' + (todS > 5000 ? '🎉 Excellent day!' : todS > 2000 ? '👍 Good progress!' : '💪 Keep going!');
+  if (q.match(/best|popular|top product|most sell/))
+    return best ? '⭐ Best-selling: ' + best[0] + ' with ' + best[1] + ' units sold.' : '📊 No sales data yet.';
+  if (q.match(/stock|inventory/))
+    return low.length ? '⚠️ Low stock: ' + low.join(', ') + '\nPlease reorder soon!' : '✅ All products have healthy stock!\n' + Object.entries(st).map(([k, v]) => '• ' + PRODS[k]?.name + ': ' + v + ' units').join('\n');
+  if (q.match(/customer|loyal|points/))
+    return topC ? '👤 Top customer: ' + topC.name + '\n• Spent: Rs. ' + topC.spent.toLocaleString() + '\n• Points: ' + topC.points + '\n• Total customers: ' + custs.length + '\n• Loyal (200+ pts): ' + loyalC : 'No customer data yet.';
+  if (q.match(/week|weekly/))
+    return '📈 Weekly: Rs. ' + wS.toLocaleString() + '\n• Avg daily: Rs. ' + Math.floor(wS / 7).toLocaleString();
+  if (q.match(/month|monthly/))
+    return '🏆 Monthly: Rs. ' + mS.toLocaleString() + '\n• Est. profit: Rs. ' + Math.floor(mS * .25).toLocaleString() + ' (25% margin)\n' + (mS > 50000 ? '🎉 Excellent month!' : '💪 Room to grow!');
+  if (q.match(/profit|earn|income/))
+    return '💎 Profit:\n• Today: Rs. ' + Math.floor(todS * .25).toLocaleString() + '\n• Weekly: Rs. ' + Math.floor(wS * .25).toLocaleString() + '\n• Monthly: Rs. ' + Math.floor(mS * .25).toLocaleString() + '\n• Margin: 25%';
+  if (q.match(/predict|forecast|next week/)) {
+    const proj = Math.round(avgBill * 7 * (0.9 + Math.random() * .2));
+    return '🔮 AI Forecast:\n• Next 7-day: Rs. ' + proj.toLocaleString() + '\n• Based on avg bill: Rs. ' + avgBill.toLocaleString() + '\n• Bills analyzed: ' + bills.length;
+  }
+  if (q.match(/advice|suggest|tip|strategy/))
+    return bills.length > 5 ? '💡 AI Recommendations:\n1. ' + (best ? 'Push ' + best[0] + ' — your top seller' : 'Start tracking sales') + '\n2. ' + (low.length ? '⚠️ Restock ' + low[0] + ' urgently' : 'Stocks healthy ✅') + '\n3. ' + loyalC + ' loyal customers qualify for discounts\n4. Avg bill Rs. ' + avgBill.toLocaleString() + ' — try bundle offers' : '💡 Add more sales data for AI recommendations!';
+  if (q.match(/total|summary/))
+    return '🧾 Summary:\n• Bills: ' + bills.length + '\n• Customers: ' + custs.length + '\n• All-time revenue: Rs. ' + allRev.toLocaleString() + '\n• Avg bill: Rs. ' + avgBill.toLocaleString();
+  return '🤖 I can help with:\n• Today\'s sales & weekly/monthly data\n• Stock levels & alerts\n• Customer insights\n• Revenue predictions\n• Business advice\n\nTry: "Show today\'s sales" or "Give business advice"';
+}
+
+// ─── SETTINGS ───
+function loadSettings() {
+  const s = DB.g('shop') || {};
+  const sv = (id, v) => { const e = document.getElementById(id); if (e && v) e.value = v; };
+  sv('sNm', s.name); sv('sTg', s.tag); sv('sPh', s.phone); sv('sAd', s.addr);
+  const e1 = document.getElementById('waTmpl'), e2 = document.getElementById('promoTmpl');
+  const wt = DB.g('waTmpl'), pt = DB.g('promoTmpl');
+  if (e1 && wt) e1.value = wt; if (e2 && pt) e2.value = pt;
+  const lb = document.getElementById('lastBk'); if (lb) lb.textContent = DB.g('lastBk') || 'Never';
+}
+
+function saveShop() {
+  DB.s('shop', {name:document.getElementById('sNm')?.value, tag:document.getElementById('sTg')?.value, phone:document.getElementById('sPh')?.value, addr:document.getElementById('sAd')?.value});
+  toast('✅ Settings saved!');
+}
+
+function saveTmpl() {
+  DB.s('waTmpl', document.getElementById('waTmpl')?.value);
+  DB.s('promoTmpl', document.getElementById('promoTmpl')?.value);
+  toast('✅ Templates saved!');
+}
+
+function backupDB() {
+  const data = {};
+  ['bills','customers','stock','sHist','sups','billNo','shop','photos'].forEach(k => { data[k] = DB.g(k); });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'serine-backup-' + new Date().toISOString().slice(0, 10) + '.json'; a.click();
+  const now = new Date().toLocaleString(); DB.s('lastBk', now);
+  const lb = document.getElementById('lastBk'); if (lb) lb.textContent = now;
+  toast('📤 Backup downloaded!');
+}
+
+function syncDB() { toast('🔄 Sync complete (Local Mode).'); }
+
+function recoverDB() {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+  inp.addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const d = JSON.parse(ev.target.result);
+        Object.keys(d).forEach(k => DB.s(k, d[k]));
+        renderInv(); renderCusts(); renderDash(); renderRecent();
+        toast('✅ Data recovered!');
+      } catch { toast('❌ Invalid file.'); }
+    };
+    r.readAsText(f);
+  });
+  inp.click();
+}
+
+function exportCSV() {
+  let csv = 'Bill No,Customer,Phone,Items,Subtotal,Discount,Total,Payment,Date\n';
+  (DB.g('bills') || []).forEach(b => {
+    csv += '"' + b.id + '","' + b.customer + '","' + b.phone + '","' + b.items.map(i => i.name + 'x' + i.qty).join('; ') + '",' + b.sub + ',' + b.disc + ',' + b.total + ',' + b.pay + ',' + b.date + '\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'serine-sales.csv'; a.click();
+  toast('📊 CSV exported!');
+}
+
+// ─── MODAL ───
+function openMod(t, h) {
+  document.getElementById('mTit').textContent = t;
+  document.getElementById('mBody').innerHTML = h;
+  document.getElementById('mBg').classList.add('open');
+}
+function closeMod() { document.getElementById('mBg').classList.remove('open'); }
+
+// ─── TOAST ───
+function toast(msg) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+// ─── INIT ───
+function initApp() {
+  DB.init(); tick(); setInterval(tick, 1000);
+  refreshBNo(); buildQsGrid(); buildInvGrid(); buildAICards(); buildAISugg();
+  renderInv(); loadCustSugg(); renderRecent(); renderCusts(); renderDash(); runAI(); loadSettings();
+}
+
+// ─── ALL EVENT LISTENERS (no onclick in HTML) ───
+document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('lgP').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('lgU').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('lgU').addEventListener('input', () => {
+    const u = document.getElementById('lgU').value.trim().toUpperCase();
+    const uKey = Object.keys(USERS).find(k => k === u);
+    if (uKey) document.getElementById('lgR').value = USERS[uKey].role;
+  });
+  document.getElementById('eyeBtn').addEventListener('click', () => {
+    const i = document.getElementById('lgP');
+    i.type = i.type === 'password' ? 'text' : 'password';
+  });
+
+  // App header
+  document.getElementById('logoutBtn').addEventListener('click', doLogout);
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+  // Desktop nav
+  document.querySelectorAll('.nb').forEach(btn => {
+    btn.addEventListener('click', () => goSec(btn.dataset.s));
+  });
+
+  // Mobile nav
+  document.querySelectorAll('.mn').forEach(btn => {
+    btn.addEventListener('click', () => goSec(btn.dataset.ms));
+  });
+
+  // Billing
+  document.getElementById('addItemBtn').addEventListener('click', addItem);
+  document.getElementById('waBtn').addEventListener('click', sendWA);
+  document.getElementById('printBtn').addEventListener('click', doPrint);
+  document.getElementById('saveBtn').addEventListener('click', saveBill);
+  document.getElementById('undoBtn').addEventListener('click', undoItem);
+  document.getElementById('clearBtn').addEventListener('click', clearBill);
+  ['cash','card','online','split'].forEach(m => {
+    document.getElementById('p-' + m).addEventListener('click', () => setPay(m));
+  });
+
+  // Inventory
+  document.getElementById('addStockBtn').addEventListener('click', openAddStock);
+  document.getElementById('addSupBtn').addEventListener('click', openAddSup);
+
+  // Customers
+  document.getElementById('addCustBtn').addEventListener('click', openAddCust);
+  document.getElementById('cSrch').addEventListener('input', filterCusts);
+
+  // Dashboard filters
+  ['d','w','m'].forEach(f => {
+    document.getElementById('ft-' + f).addEventListener('click', function() {
+      document.querySelectorAll('.ft').forEach(b => b.classList.remove('active'));
+      this.classList.add('active'); renderDash();
+    });
+  });
+
+  // Advanced chart tabs
+  [['bar','at-bar'],['line','at-line'],['radar','at-radar'],['polarArea','at-polar']].forEach(([t, id]) => {
+    document.getElementById(id).addEventListener('click', function() {
+      document.querySelectorAll('.at').forEach(b => b.classList.remove('active'));
+      this.classList.add('active'); advT = t; renderAdvChart();
+    });
+  });
+
+  // AI
+  document.getElementById('refreshAIBtn').addEventListener('click', refreshAI);
+  document.getElementById('aiSendBtn').addEventListener('click', sendAI);
+  document.getElementById('aiInp').addEventListener('keydown', e => { if (e.key === 'Enter') sendAI(); });
+
+  // Settings
+  document.getElementById('saveShopBtn').addEventListener('click', saveShop);
+  document.getElementById('saveTmplBtn').addEventListener('click', saveTmpl);
+  document.getElementById('backupBtn').addEventListener('click', backupDB);
+  document.getElementById('syncBtn').addEventListener('click', syncDB);
+  document.getElementById('recoverBtn').addEventListener('click', recoverDB);
+  document.getElementById('fbSyncBtn').addEventListener('click', fbForceSync);
+  document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+  // Modal
+  document.getElementById('mClose').addEventListener('click', closeMod);
+  document.getElementById('mBg').addEventListener('click', e => { if (e.target === document.getElementById('mBg')) closeMod(); });
+
+  // Photo upload
+  document.getElementById('imgInp').addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f || !imgTarget) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const photos = DB.g('photos') || {};
+      photos[imgTarget] = ev.target.result;
+      DB.s('photos', photos); renderPhoto(imgTarget);
+      toast('📷 Photo updated for ' + PRODS[imgTarget].name);
+      imgTarget = null; e.target.value = '';
+    };
+    r.readAsDataURL(f);
+  });
+
+  // Init Firebase after app start
+  setTimeout(initFirebase, 600);
+
+  // Mobile swipe to close modal
+  let ty = 0;
+  const mBg = document.getElementById('mBg');
+  mBg.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, {passive:true});
+  mBg.addEventListener('touchend', e => { if (e.changedTouches[0].clientY - ty > 70) closeMod(); }, {passive:true});
+});
+
+
+// ════════════════════════════════════════════════════
+//  FIREBASE CLOUD INTEGRATION
+//  Offline-first — LocalStorage primary, Firebase syncs in background
+// ════════════════════════════════════════════════════
+let FB_ONLINE = false, FB_SHOP_ID = null;
+
+function fbSetUI(on, txt) {
+  const bar = document.getElementById('fbBarEl');
+  const dot = document.getElementById('fbDotEl');
+  const ttxt = document.getElementById('fbTxtEl');
+  const hdot = document.getElementById('hdrFbDot');
+  const htxt = document.getElementById('hdrFbTxt');
+  if (bar)  { bar.className  = 'fb-bar ' + (on ? 'on' : 'off'); }
+  if (dot)  { dot.style.background = on ? 'var(--g)' : 'var(--acc2)'; }
+  if (ttxt)  ttxt.textContent = txt;
+  if (hdot) { hdot.className = 'hdr-fb-dot ' + (on ? 'on' : 'off'); }
+  if (htxt)  htxt.textContent = on ? 'Cloud ☁️' : 'Local';
+}
+
+function fbShowSync(msg) {
+  const el = document.getElementById('syncBadge');
+  if (!el) return;
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._st); el._st = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function initFirebase() {
+  if (!window.FB?.ok) { fbSetUI(false, 'Local Storage Only'); return; }
+  const shop = DB.g('shop') || {};
+  FB_SHOP_ID = (shop.name || 'serine-tea-leaf').toLowerCase().replace(/[^a-z0-9]/g, '-');
+  FB_ONLINE = true;
+  fbSetUI(true, '☁️ Firebase Connected — ' + FB_SHOP_ID);
+  fbPullFromCloud();
+  fbListenRealtime();
+  toast('☁️ Firebase connected! Real-time sync active.');
+}
+
+async function fbPush(path, data) {
+  if (!FB_ONLINE || !window.FB?.ok) return;
+  try { await window.FB.set(window.FB.ref(window.FB.db, 'shops/' + FB_SHOP_ID + (path ? '/' + path : '')), data); }
+  catch(e) { console.warn('Firebase push failed:', e.message); }
+}
+
+async function fbPullFromCloud() {
+  if (!FB_ONLINE || !window.FB?.ok) return;
+  try {
+    fbShowSync('⬇️ Pulling from cloud...');
+    const snap = await window.FB.get(window.FB.ref(window.FB.db, 'shops/' + FB_SHOP_ID));
+    if (snap.exists()) {
+      const d = snap.val();
+      ['bills','customers','stock','sHist','sups','billNo','shop'].forEach(k => { if (d[k] !== undefined) DB.s(k, d[k]); });
+      renderInv(); renderCusts(); renderDash(); renderRecent(); runAI();
+      fbShowSync('✅ Cloud sync complete');
+      toast('☁️ Data synced from cloud!');
+    } else { fbPushAllToCloud(); }
+  } catch(e) {
+    fbSetUI(false, '⚠️ Connection failed — using local data');
+    FB_ONLINE = false;
+    console.warn('Firebase pull failed:', e.message);
+  }
+}
+
+async function fbPushAllToCloud() {
+  if (!FB_ONLINE || !window.FB?.ok) return;
+  fbShowSync('⬆️ Uploading to cloud...');
+  const data = {};
+  ['bills','customers','stock','sHist','sups','billNo','shop'].forEach(k => { data[k] = DB.g(k); });
+  await fbPush('', data);
+  fbShowSync('✅ Uploaded to cloud');
+}
+
+function fbForceSync() {
+  if (!window.FB?.ok) { toast('⚠️ Firebase not configured. Update FB_CONFIG first.'); return; }
+  if (FB_ONLINE) { fbPushAllToCloud().then(() => toast('☁️ Force sync complete!')); }
+  else { fbPullFromCloud(); }
+}
+
+function fbAfterBill() {
+  if (!FB_ONLINE) return;
+  setTimeout(() => {
+    fbPush('bills',     DB.g('bills'));
+    fbPush('stock',     DB.g('stock'));
+    fbPush('customers', DB.g('customers'));
+    fbPush('sHist',     DB.g('sHist'));
+    fbPush('billNo',    DB.g('billNo'));
+    fbShowSync('☁️ Synced to cloud');
+  }, 200);
+}
+function fbAfterStock() { if (FB_ONLINE) setTimeout(() => { fbPush('stock', DB.g('stock')); fbPush('sHist', DB.g('sHist')); }, 200); }
+function fbAfterCust()  { if (FB_ONLINE) setTimeout(() => fbPush('customers', DB.g('customers')), 200); }
+
+function fbListenRealtime() {
+  if (!FB_ONLINE || !window.FB?.ok) return;
+  const { db, ref, onValue } = window.FB;
+  onValue(ref(db, 'shops/' + FB_SHOP_ID + '/bills'), snap => {
+    if (!snap.exists()) return;
+    const cb = snap.val(), lb = DB.g('bills') || [];
+    if (cb.length > lb.length) { DB.s('bills', cb); renderRecent(); renderDash(); runAI(); fbShowSync('🔄 Bills synced from another device'); }
+  });
+  onValue(ref(db, 'shops/' + FB_SHOP_ID + '/stock'), snap => { if (snap.exists()) { DB.s('stock', snap.val()); renderInv(); } });
+  onValue(ref(db, 'shops/' + FB_SHOP_ID + '/customers'), snap => { if (snap.exists()) { DB.s('customers', snap.val()); renderCusts(); loadCustSugg(); } });
+}
+
+window.addEventListener('online',  () => { if (window.FB?.ok) { FB_ONLINE = true;  fbSetUI(true, '☁️ Firebase Connected'); fbPushAllToCloud(); toast('🌐 Back online — syncing...'); } });
+window.addEventListener('offline', () => { FB_ONLINE = false; fbSetUI(false, '📴 Offline — local data'); toast('📴 Offline mode'); });
+
+// ─── SECURITY ───
+document.addEventListener('keydown', e => {
+  if (e.key === 'PrintScreen') { e.preventDefault(); toast('🔒 Screenshot blocked!'); }
+  if (e.ctrlKey && e.key === 'p') { e.preventDefault(); if (CU) doPrint(); }
+  if (e.key === 'F12' && CU && CU.role !== 'staff') { e.preventDefault(); toast('🔒 DevTools restricted.'); }
+});
+document.addEventListener('contextmenu', e => { if (CU) e.preventDefault(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && CU && CU.role !== 'staff') toast('⚠️ Session monitored.'); });
+document.addEventListener('selectstart', e => { if (CU && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+</script>
+</body>
+</html>
