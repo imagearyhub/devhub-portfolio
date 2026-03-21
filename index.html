@@ -779,6 +779,7 @@ body[data-role="owner"] .mn.owner-only { opacity: 1; pointer-events: auto; }
    RESPONSIVE
 ═══════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+  html { font-size: 14px; }
   .hdr-nav { display: none; }
   .hdr-menu-btn { display: flex; }
   .mob-nav { display: flex; }
@@ -790,8 +791,23 @@ body[data-role="owner"] .mn.owner-only { opacity: 1; pointer-events: auto; }
   .chat-container { height: 70vh; }
   .owner-grid { grid-template-columns: 1fr 1fr; }
   .form-row { grid-template-columns: 1fr; }
-  .hero { padding: 3rem 1.2rem 2.5rem; }
-  .hero-stats { gap: 1.2rem; }
+  .hero { padding: 2.5rem 1rem 2rem; }
+  .hero h2 { font-size: 1.8rem; }
+  .hero p { font-size: .88rem; }
+  .hero-stats { gap: 1rem; }
+  .stat-pill strong { font-size: 1.6rem; }
+  .stat-pill span { font-size: .65rem; }
+  .pc-title { font-size: 1rem; }
+  .pc-desc { font-size: .78rem; }
+  .brand-text h1 { font-size: .95rem; }
+  .sec-heading { font-size: 1.1rem; }
+  .msg-bubble { font-size: .82rem; }
+  #chatInput { font-size: .85rem; }
+}
+@media (max-width: 480px) {
+  html { font-size: 13px; }
+  .hero h2 { font-size: 1.5rem; }
+  .hero-stats { gap: .8rem; }
 }
 @media (max-width: 420px) {
   .owner-grid { grid-template-columns: 1fr; }
@@ -1283,7 +1299,7 @@ body.light-mode body::before { opacity: .4; }
         <button class="viewer-back" onclick="closeViewer()">← Back</button>
         <div class="viewer-title" id="viewerTitle">System Viewer</div>
         <div style="margin-left:auto;display:flex;gap:.6rem;align-items:center">
-          <button id="viewerNewTabBtn" onclick="openViewerNewTab()" style="padding:.35rem .85rem;border:1px solid var(--bdrh);border-radius:20px;background:rgba(37,99,235,.15);color:var(--blue3);font-size:.78rem;font-weight:700;cursor:pointer">🔗 New Tab</button>
+          <button id="viewerNewTabBtn" onclick="openViewerNewTab()" style="padding:.35rem .85rem;border:1px solid var(--bdrh);border-radius:20px;background:rgba(37,99,235,.15);color:var(--blue3);font-size:.78rem;font-weight:700;cursor:pointer;display:none">🔗 New Tab</button>
           <span style="font-size:.72rem;color:var(--txt3)">🔒 Secured View</span>
         </div>
       </div>
@@ -1912,6 +1928,7 @@ function buildFileSrc(sys) {
 }
 
 function openViewerNewTab() {
+  if (currentRole !== "owner") { showToast("🔐 Only Owner can open in new tab"); return; }
   if (currentViewerSys) {
     const src = buildFileSrc(currentViewerSys);
     window.open(src, "_blank");
@@ -1960,12 +1977,7 @@ function openFullScreenViewer(sys, src) {
       <span style="font-size:1.1rem">${sys.icon||"📦"}</span>
       <span style="font-weight:800;color:white;font-size:.95rem">${sys.name}</span>
       <div style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
-        <a href="${src}" target="_blank" style="
-          padding:.35rem .85rem;border:1px solid rgba(59,130,246,.4);
-          border-radius:20px;background:rgba(37,99,235,.12);
-          color:#60a5fa;font-size:.75rem;font-weight:700;
-          text-decoration:none;cursor:pointer;
-        ">🔗 New Tab</a>
+        ${currentRole === 'owner' ? `<a href="${src}" target="_blank" style="padding:.35rem .85rem;border:1px solid rgba(59,130,246,.4);border-radius:20px;background:rgba(37,99,235,.12);color:#60a5fa;font-size:.75rem;font-weight:700;text-decoration:none;cursor:pointer;">🔗 New Tab</a>` : ''}
         <span style="font-size:.7rem;color:rgba(139,180,232,.5)">🔒 Secured</span>
       </div>
     </div>
@@ -2072,6 +2084,9 @@ function enterPublic() {
 function enterApp(role) {
   applyRole(role);
   updateAdminVisibility();
+  // Show/hide sec-viewer New Tab button based on role
+  const ntb = document.getElementById("viewerNewTabBtn");
+  if (ntb) ntb.style.display = role === "owner" ? "" : "none";
   document.getElementById("loginScreen").classList.remove("active");
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("mainApp").classList.add("active");
@@ -2146,6 +2161,17 @@ function closeDrawer() {
 
 /* ═══════ MODALS ═══════ */
 function openModal(id) {
+  // Owner-only modals
+  const ownerOnlyModals = ["addSystemModal","manageSystemsModal","settingsModal","usersModal","pwChangeModal"];
+  if (ownerOnlyModals.includes(id) && currentRole !== "owner") {
+    // Admin can only change password
+    if (id === "pwChangeModal" && currentRole === "admin") {
+      document.getElementById(id).classList.add("active");
+      return;
+    }
+    showOwnerLock();
+    return;
+  }
   document.getElementById(id).classList.add("active");
   if (id==="manageSystemsModal") renderManageList();
 }
@@ -2312,16 +2338,120 @@ function clearAddForm() {
 function renderManageList() {
   const all = [...SYSTEMS, ...systemsFromDB];
   const list = document.getElementById("manageList");
+  if (!all.length) {
+    list.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--txt3)">No systems yet. Add one from the Owner Panel.</div>`;
+    return;
+  }
   list.innerHTML = all.map((s,i)=>`
-    <div style="display:flex;align-items:center;gap:.8rem;padding:1rem;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:var(--rr2)">
-      <div style="font-size:1.5rem">${s.icon||"📦"}</div>
-      <div style="flex:1">
-        <div style="font-weight:700;color:var(--white);font-size:.9rem">${s.name}</div>
-        <div style="font-size:.75rem;color:var(--txt2)">${s.tag}</div>
+    <div style="background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:var(--rr2);overflow:hidden;transition:border-color .2s" id="mitem_${s.id}">
+      <!-- Header row -->
+      <div style="display:flex;align-items:center;gap:.8rem;padding:.9rem 1rem;">
+        <div style="font-size:1.6rem;flex-shrink:0">${s.icon||"📦"}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;color:var(--white);font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name}</div>
+          <div style="font-size:.72rem;color:var(--txt2);margin-top:.1rem">${s.tag||"System"} · ${(s.chips||[]).slice(0,3).join(", ")}</div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-shrink:0">
+          <button onclick="toggleEditRow('${s.id}')" style="padding:.38rem .75rem;border:1px solid var(--bdrh);border-radius:20px;background:rgba(37,99,235,.12);color:var(--blue3);font-size:.75rem;font-weight:700;cursor:pointer">✏️ Edit</button>
+          <button onclick="deleteSystem('${s.id}',${i<SYSTEMS.length})" style="padding:.38rem .75rem;border:1px solid rgba(239,68,68,.35);border-radius:20px;background:rgba(239,68,68,.1);color:#f87171;font-size:.75rem;font-weight:700;cursor:pointer">🗑</button>
+        </div>
       </div>
-      <button class="btn-danger" onclick="deleteSystem('${s.id}',${i<SYSTEMS.length})">🗑</button>
+      <!-- Edit row (hidden by default) -->
+      <div id="editrow_${s.id}" style="display:none;padding:1rem;border-top:1px solid var(--bdr);background:rgba(37,99,235,.04)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.7rem">
+          <div>
+            <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">System Name</label>
+            <input id="edit_name_${s.id}" value="${s.name||''}" style="width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.08);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.85rem;outline:none;-webkit-user-select:text;user-select:text" onfocus="this.style.borderColor='var(--blue2)'" onblur="this.style.borderColor='var(--bdr)'">
+          </div>
+          <div>
+            <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">Icon (Emoji)</label>
+            <input id="edit_icon_${s.id}" value="${s.icon||''}" maxlength="4" style="width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.08);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:1.2rem;outline:none;text-align:center;-webkit-user-select:text;user-select:text" onfocus="this.style.borderColor='var(--blue2)'" onblur="this.style.borderColor='var(--bdr)'">
+          </div>
+        </div>
+        <div style="margin-bottom:.7rem">
+          <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">Description</label>
+          <textarea id="edit_desc_${s.id}" rows="2" style="width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.08);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.82rem;outline:none;resize:none;font-family:'Inter',sans-serif;-webkit-user-select:text;user-select:text" onfocus="this.style.borderColor='var(--blue2)'" onblur="this.style.borderColor='var(--bdr)'">${s.desc||''}</textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.7rem">
+          <div>
+            <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">Tags (comma separated)</label>
+            <input id="edit_tags_${s.id}" value="${(s.chips||[]).join(', ')}" style="width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.08);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.82rem;outline:none;-webkit-user-select:text;user-select:text" onfocus="this.style.borderColor='var(--blue2)'" onblur="this.style.borderColor='var(--bdr)'">
+          </div>
+          <div>
+            <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">Cover Style</label>
+            <select id="edit_cover_${s.id}" style="width:100%;padding:.6rem .8rem;background:rgba(4,20,55,.9);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.82rem;outline:none;cursor:pointer">
+              <option value="tea" ${(s.tagType||s.coverClass||'').includes('tea')?'selected':''}>🟢 Green (Nature/POS)</option>
+              <option value="design" ${(s.tagType||s.coverClass||'').includes('design')?'selected':''}>🔵 Blue (Design/Tech)</option>
+              <option value="purple" ${(s.tagType||s.coverClass||'').includes('purple')?'selected':''}>🟣 Purple (CRM)</option>
+              <option value="orange" ${(s.tagType||s.coverClass||'').includes('orange')?'selected':''}>🟠 Orange (E-Commerce)</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:.9rem">
+          <label style="font-size:.68rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:.3rem">File Name / URL</label>
+          <input id="edit_file_${s.id}" value="${s.fileName||''}" style="width:100%;padding:.6rem .8rem;background:rgba(255,255,255,.08);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-size:.82rem;outline:none;-webkit-user-select:text;user-select:text" onfocus="this.style.borderColor='var(--blue2)'" onblur="this.style.borderColor='var(--bdr)'">
+        </div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end">
+          <button onclick="toggleEditRow('${s.id}')" style="padding:.5rem 1rem;border:1px solid var(--bdr);border-radius:8px;background:transparent;color:var(--txt2);font-size:.82rem;font-weight:600;cursor:pointer">Cancel</button>
+          <button onclick="saveEditSystem('${s.id}',${i<SYSTEMS.length})" style="padding:.5rem 1.2rem;border:none;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;font-size:.82rem;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(37,99,235,.35)">💾 Save Changes</button>
+        </div>
+      </div>
     </div>
   `).join("");
+}
+
+function toggleEditRow(id) {
+  const row = document.getElementById("editrow_" + id);
+  const item = document.getElementById("mitem_" + id);
+  if (!row) return;
+  const isOpen = row.style.display !== "none";
+  row.style.display = isOpen ? "none" : "block";
+  if (item) item.style.borderColor = isOpen ? "var(--bdr)" : "var(--bdrh)";
+}
+
+async function saveEditSystem(id, isDefault) {
+  const name  = document.getElementById("edit_name_"  + id)?.value.trim();
+  const icon  = document.getElementById("edit_icon_"  + id)?.value.trim();
+  const desc  = document.getElementById("edit_desc_"  + id)?.value.trim();
+  const tags  = document.getElementById("edit_tags_"  + id)?.value.trim();
+  const cover = document.getElementById("edit_cover_" + id)?.value;
+  const file  = document.getElementById("edit_file_"  + id)?.value.trim();
+
+  if (!name) { showToast("⚠️ System name required"); return; }
+
+  const coverMap = { tea:"pc-cover-tea", design:"pc-cover-design", purple:"pc-cover-purple", orange:"pc-cover-orange" };
+
+  const updates = {
+    name, icon, desc,
+    tag: cover.charAt(0).toUpperCase() + cover.slice(1),
+    tagType: cover,
+    coverClass: coverMap[cover] || "pc-cover-design",
+    chips: tags.split(",").map(t=>t.trim()).filter(Boolean),
+    fileName: file
+  };
+
+  // Update in memory
+  if (isDefault) {
+    const idx = SYSTEMS.findIndex(s=>s.id===id);
+    if (idx !== -1) SYSTEMS[idx] = { ...SYSTEMS[idx], ...updates };
+  } else {
+    const idx = systemsFromDB.findIndex(s=>s.id===id);
+    if (idx !== -1) systemsFromDB[idx] = { ...systemsFromDB[idx], ...updates };
+    // Save to Firebase
+    if (FB_CONFIG.idToken && !id.startsWith("local_")) {
+      try { await FB.updateDoc("systems", id, updates); } catch(e) { console.warn("FB update:", e.message); }
+    }
+  }
+
+  renderProducts();
+  renderManageList();
+  showToast("✅ " + name + " updated!");
+  pushNotif("✏️", `System "${name}" updated successfully`);
+
+  // Log activity
+  const acts = JSON.parse(localStorage.getItem("dh_activity")||"[]");
+  acts.push({ icon:"✏️", msg:`System edited: "${name}"`, time: new Date().toLocaleTimeString() });
+  localStorage.setItem("dh_activity", JSON.stringify(acts));
 }
 
 async function deleteSystem(id, isDefault) {
