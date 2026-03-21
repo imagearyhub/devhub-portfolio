@@ -1881,52 +1881,9 @@ function showSec(id) {
 
 function openSystemViewer(sys) {
   currentViewerSys = sys;
-  const frame = document.getElementById("systemFrame");
-  document.getElementById("viewerTitle").textContent = (sys.icon||"📦") + " " + sys.name;
-
-  // Build the correct URL
   const src = buildFileSrc(sys);
-
-  // Try iframe first
-  frame.src = src;
-
-  // Show loading state
-  frame.style.opacity = "0";
-  const loader = document.getElementById("viewerLoader");
-  if (loader) loader.style.display = "flex";
-
-  frame.onload = function() {
-    frame.style.opacity = "1";
-    if (loader) loader.style.display = "none";
-    // Check if actually loaded (blank = failed)
-    try {
-      const doc = frame.contentDocument;
-      if (!doc || !doc.body || doc.body.innerHTML.trim() === "") {
-        showViewerCard(sys, src);
-      }
-    } catch(e) {
-      // cross-origin — file loaded fine in iframe
-      frame.style.opacity = "1";
-    }
-  };
-
-  frame.onerror = function() {
-    if (loader) loader.style.display = "none";
-    showViewerCard(sys, src);
-  };
-
-  // Fallback after 5s if still blank
-  setTimeout(function() {
-    if (loader) loader.style.display = "none";
-    try {
-      const doc = frame.contentDocument;
-      if (!doc || !doc.body || doc.body.innerHTML.trim() === "") {
-        showViewerCard(sys, src);
-      }
-    } catch(e) {}
-  }, 5000);
-
-  showSec("viewer");
+  // Directly open fullscreen overlay — works for all project files
+  openFullScreenViewer(sys, src);
 }
 
 let currentViewerSys = null;
@@ -1967,53 +1924,68 @@ function closeViewer() {
 }
 
 function showViewerCard(sys, src) {
-  const frame = document.getElementById("systemFrame");
-  frame.srcdoc = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  * { margin:0;padding:0;box-sizing:border-box; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #020c1b 0%, #071e3d 50%, #020c1b 100%);
-    color: #f0f6ff; display: flex; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 2rem; text-align: center;
-  }
-  .card {
-    background: rgba(4,20,55,.8);
-    border: 1px solid rgba(59,130,246,.3);
-    border-radius: 24px; padding: 3rem 2.5rem;
-    max-width: 480px; width: 100%;
-    box-shadow: 0 0 80px rgba(37,99,235,.2);
-  }
-  .icon { font-size: 4rem; margin-bottom: 1rem; }
-  h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: .5rem; color: white; }
-  p { font-size: .9rem; color: #8bb4e8; line-height: 1.7; margin-bottom: 1.5rem; }
-  .btn {
-    display: inline-flex; align-items: center; gap: .6rem;
-    padding: .9rem 2rem; border-radius: 12px; font-size: 1rem;
-    font-weight: 700; text-decoration: none; cursor: pointer;
-    background: linear-gradient(135deg, #2563eb, #06b6d4);
-    color: white; border: none; transition: transform .2s;
-    box-shadow: 0 6px 25px rgba(37,99,235,.4);
-  }
-  .btn:hover { transform: translateY(-2px); }
-  .url { font-size: .72rem; color: rgba(139,180,232,.5); margin-top: 1rem; word-break: break-all; }
-</style>
-</head>
-<body>
-<div class="card">
-  <div class="icon">${sys.icon||"📦"}</div>
-  <h2>${sys.name}</h2>
-  <p>${sys.desc||"Click below to open this system in a new tab."}</p>
-  <a class="btn" href="${src}" target="_blank">🚀 Open System →</a>
-  <div class="url">${src}</div>
-</div>
-</body>
-</html>`;
-  frame.style.opacity = "1";
+  // Use full-screen overlay instead of srcdoc card
+  // This loads system in a proper full-screen overlay within DevHub
+  openFullScreenViewer(sys, src);
+}
+
+function openFullScreenViewer(sys, src) {
+  // Remove existing overlay if any
+  const existing = document.getElementById("fsOverlay");
+  if (existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "fsOverlay";
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:9500;
+    display:flex;flex-direction:column;
+    background:#020c1b;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      display:flex;align-items:center;gap:.8rem;
+      padding:.7rem 1.2rem;
+      background:rgba(4,20,55,.95);
+      border-bottom:1px solid rgba(59,130,246,.2);
+      backdrop-filter:blur(20px);
+      flex-shrink:0;
+    ">
+      <button onclick="closeFullScreenViewer()" style="
+        display:flex;align-items:center;gap:.4rem;
+        padding:.4rem .9rem;border:1px solid rgba(59,130,246,.4);
+        border-radius:20px;background:rgba(37,99,235,.12);
+        color:#60a5fa;font-size:.82rem;font-weight:700;cursor:pointer;
+      ">← Back</button>
+      <span style="font-size:1.1rem">${sys.icon||"📦"}</span>
+      <span style="font-weight:800;color:white;font-size:.95rem">${sys.name}</span>
+      <div style="margin-left:auto;display:flex;gap:.5rem;align-items:center">
+        <a href="${src}" target="_blank" style="
+          padding:.35rem .85rem;border:1px solid rgba(59,130,246,.4);
+          border-radius:20px;background:rgba(37,99,235,.12);
+          color:#60a5fa;font-size:.75rem;font-weight:700;
+          text-decoration:none;cursor:pointer;
+        ">🔗 New Tab</a>
+        <span style="font-size:.7rem;color:rgba(139,180,232,.5)">🔒 Secured</span>
+      </div>
+    </div>
+    <iframe
+      src="${src}"
+      style="flex:1;border:none;width:100%;background:#020c1b;"
+      allow="fullscreen scripts same-origin forms popups"
+      loading="lazy"
+    ></iframe>
+  `;
+
+  document.body.appendChild(overlay);
+  // Prevent body scroll
+  document.body.style.overflow = "hidden";
+}
+
+function closeFullScreenViewer() {
+  const overlay = document.getElementById("fsOverlay");
+  if (overlay) overlay.remove();
+  document.body.style.overflow = "";
 }
 
 function checkOwnerNav(sec) {
